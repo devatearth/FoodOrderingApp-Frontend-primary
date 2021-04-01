@@ -1,0 +1,15 @@
+@import "../../css/variables.scss";
+
+$headerGrey: #333;
+
+nav {
+  background: $headerGrey;
+  .customRow {
+    .segment {
+      padding: 15px;
+      .appIcon {
+        fill: $white;
+      }
+    }
+  }
+}
