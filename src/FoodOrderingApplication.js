@@ -1,12 +1,15 @@
+/* react imports */
 import React, { Component } from 'react';
+
+/* project imports */
+import Header from "./common/components/header/Header.js";
 
 class FoodOrderingApplication extends Component {
   render() {
     return (
-      <div className="demo">
-        <h1>Food Ordering Application</h1>
-        <p>Welcome Screen</p>
-      </div>
+      <React.Fragment>
+        <Header/>
+      </React.Fragment>
     );
   }
 }
