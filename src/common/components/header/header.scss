@@ -6,9 +6,58 @@ nav {
   background: $headerGrey;
   .customRow {
     .segment {
-      padding: 15px;
       .appIcon {
         fill: $white;
+      }
+      .appSearch {
+        color: $white;
+      }
+      .headerSearchIcon {
+        fill: $white;
+        margin-right: 10px;
+      }
+      .MuiButtonBase-root {
+        margin-top: 5px;
+      }
+      .MuiInput-underline.Mui-focused:after {
+        border-bottom-color: $white;
+      }
+    }
+    .segment:first-child {
+      padding: 15px;    
+    }
+    .segment:last-child {
+      padding: 0 15px 15px;
+    }
+  }
+}
+@media only screen and (min-width: 768px) {
+  nav {
+    .customRow {
+      .segment:first-child {
+        width: 40%;
+        padding: 15px;
+      }
+      .segment:last-child {
+        width: 60%;
+        padding: 15px;
+      }
+      .segment {
+        float: left;
+        height: 65px;
+        .appIcon {
+          width: 35px;
+          height: 35px;
+        }
+        .appSearch {
+          width: calc(100% - 150px);
+        }
+        .MuiButtonBase-root {
+          margin-top: 0;
+          vertical-align: top;
+          margin-left: 15px;
+          width: 100px;
+        }
       }
     }
   }
