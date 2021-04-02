@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^3.0.1",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "node-sass": "^4.14.1",
     "react": "^16.7.0-alpha.2",
     "react-dom": "^16.7.0-alpha.2",
-    "react-scripts": "2.0.4",
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/icons": "^3.0.1",
-    "@material-ui/lab": "^4.0.0-alpha.57"
+    "react-modal": "^3.12.1",
+    "react-scripts": "2.0.4"
   },
   "scripts": {
     "start": "react-scripts start",

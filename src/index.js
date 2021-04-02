@@ -8,8 +8,8 @@ import FoodOrderingApplication from "./FoodOrderingApplication.js";
 
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <FoodOrderingApplication/>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById('root')
 );

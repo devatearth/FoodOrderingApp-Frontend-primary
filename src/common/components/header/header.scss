@@ -26,39 +26,62 @@ nav {
     .segment:first-child {
       padding: 15px;    
     }
-    .segment:last-child {
+    .segment:nth-child(2), .segment:last-child {
       padding: 0 15px 15px;
     }
   }
 }
+.ReactModal__Overlay.ReactModal__Overlay--after-open {
+  height: 100vh;
+  overflow: auto;
+}
+.appHeaderModal {
+  margin: 30px auto 30px;
+  width: calc(100% - 40px);
+  overflow: auto;
+  background: $white;
+  border: 1px solid #eee;
+  padding: 45px 15px;
+  .MuiTabPanel-root {
+    padding: 0;
+  }
+  .loginForm, .signUpForm {
+    padding: 40px 15px;
+    .MuiFormControl-root {
+      margin-bottom: 5px;
+    }
+    .loginButton, .signUpButton {
+      width: 100px;
+      display: block;
+      margin: 25px auto 0;
+    }
+  }
+}
+
 @media only screen and (min-width: 768px) {
   nav {
     .customRow {
-      .segment:first-child {
-        width: 40%;
+      .segment:first-child, .segment:nth-child(2), .segment:last-child {
         padding: 15px;
+        width: calc(100% / 3);
+        float: left;
       }
       .segment:last-child {
-        width: 60%;
-        padding: 15px;
+        text-align: right;
       }
       .segment {
-        float: left;
         height: 65px;
         .appIcon {
           width: 35px;
           height: 35px;
         }
-        .appSearch {
-          width: calc(100% - 150px);
-        }
         .MuiButtonBase-root {
           margin-top: 0;
-          vertical-align: top;
-          margin-left: 15px;
-          width: 100px;
         }
       }
     }
+  }
+  .appHeaderModal {
+    width: 500px;
   }
 }
