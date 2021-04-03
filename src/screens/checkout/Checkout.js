@@ -1,11 +1,15 @@
 import React, { Component } from "react";
 import './Checkout.css';
-{console.log("checkout page hitted")}
+import Header from '../../common/components/header/Header';
+{ console.log("checkout page hitted") }
 class Checkout extends Component {
-    
+
     render() {
         return (
-            <div>Checkot page</div>
+            <div>
+                <Header />
+                <p>Checkot page</p>
+            </div>
         );
     }
 }
