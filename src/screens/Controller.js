@@ -12,7 +12,7 @@ class Controller extends Component {
         //Provide the url for backend service
         this.baseUrl= "http://localhost:8080/api/";
     }
-    
+
     render(){
         return(
             <Router>
