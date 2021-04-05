@@ -1,8 +1,11 @@
 /* react imports */
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 /* project imports */
-import Header from "./common/components/header/Header.js";
+import Controller from "./screens/Controller.js"
+import Home from "./screens/home/Home.js";
+import Checkout from "./screens/checkout/Checkout.js";
 import SampleData from "./common/data/sample-data.js";
 
 class FoodOrderingApplication extends Component {
@@ -12,28 +15,47 @@ class FoodOrderingApplication extends Component {
       data: null,
       template: null
     };
+    this.baseUrl= "http://localhost:8080/api/";
   }
 
   /* fetches the restaurant data before the app is loaded and rendered */
-  componentWillMount() {
-    this.setState({data: SampleData(), template: SampleData()});
-  }
+  fetchRestaurants() {
+    let $this = this;
+    $this.setState({data: SampleData(), template: SampleData()}, function() {
+      console.log($this.state);
+    });
+  };
 
   /* helps to perform the necessary search on the set of restaurant data and filter */
-  searchByName(name) {
+  searchRestaurantsByName(name) {
     let { data } = this.state;
     let newTemplateData = data.filter(function(restaurant, index) {
       return restaurant.name.toLowerCase().indexOf(name.toLowerCase()) !== -1; 
     });
-
     this.setState({template: newTemplateData});
   }
 
   /* render */
   render() {
+    let $this = this;
+    let arrayOfRestaurantsToRender = $this.state.template;
     return (
       <React.Fragment>
-        <Header searchHandler={this.searchByName.bind(this)}/>
+        <Router>
+          <div className= "main-container">
+            {/* home */}
+            <Route exact path="/" render={(props) => 
+              <Home {...props} baseUrl={this.baseUrl} 
+                restaurants={arrayOfRestaurantsToRender} 
+                fetchRestaurants={$this.fetchRestaurants.bind($this)}
+                searchRestaurantsByName={$this.searchRestaurantsByName.bind($this)}
+              />
+            }/>
+
+            {/* checkout */}
+            <Route exact path="/checkout" render={(props) => <Checkout {...props} baseUrl={this.baseUrl}/>} />
+          </div>
+        </Router>
       </React.Fragment>
     );
   }

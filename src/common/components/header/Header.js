@@ -389,12 +389,21 @@ class Header extends Component {
     super();
     this.state = {
       activeTab: "1",
-      modalIsOpen: true,
+      modalIsOpen: false,
       snackbar: {
         show: false,
         message: ""
       }
     };
+  }
+
+  /* component will mount - based on the props sent from the top level food application component, necesary 
+     action will be taken */
+  componentWillMount() {
+    let $this = this;
+    if ("fetchRestaurants" in $this.props) {
+      $this.props.fetchRestaurants();
+    }
   }
 
   /* tabs on change handler */
@@ -433,7 +442,8 @@ class Header extends Component {
 
   /* render */
   render() {
-    let { classes } = this.props;
+    let $this = this;
+    let { routerProps } = $this.props.routerProps;
     return (
       <React.Fragment>
         {/* nav section */}
@@ -443,10 +453,15 @@ class Header extends Component {
               <HeaderAppIcon/>
             </div>
             <div className="segment">
-              <HeaderSearch searchHandler={this.props.searchHandler}/>
+              {/* search feature only applicable in the home page and other pages will not be rendered */}
+              {
+                routerProps.location.pathname === "/" &&
+                <HeaderSearch searchHandler={$this.props.searchRestaurantsByName}/>
+              }
+              {/* search feature only applicable in the home page and other pages will not be rendered */}
             </div>
             <div className="segment">
-              <HeaderLoginButton customCss={classes} onClickHandler={this.onClickHandler.bind(this)}/>
+              <HeaderLoginButton onClickHandler={this.onClickHandler.bind(this)}/>
             </div>
           </div>
         </nav>
