@@ -11,7 +11,7 @@ function sampleDataSet() {
       "name": "3 Wise Monkeys",
       "tags": ["Chinese", "Continental", "Indian", "Italian", "Snacks"],
       "img": "https://media-cdn.tripadvisor.com/media/photo-s/02/8c/0b/4e/filename-the-square-restaurant.jpg",
-      "cost": "Rs. 1100 for Two",
+      "cost": "1100 for Two",
       "rating": 4.9,
       "count": 28
     },
@@ -21,7 +21,7 @@ function sampleDataSet() {
       "name": "Gateway Taproom",
       "tags": ["Chinese", "Continental", "Indian", "Italian", "Snacks"],
       "img": "https://media-cdn.tripadvisor.com/media/photo-s/02/8c/0b/4e/filename-the-square-restaurant.jpg",
-      "cost": "Rs. 1100 for Two",
+      "cost": "1100 for Two",
       "rating": 4.9,
       "count": 28
     },
@@ -31,7 +31,7 @@ function sampleDataSet() {
       "name": "Lion Heart",
       "tags": ["Chinese", "Continental", "Indian", "Italian", "Snacks"],
       "img": "https://media-cdn.tripadvisor.com/media/photo-s/02/8c/0b/4e/filename-the-square-restaurant.jpg",
-      "cost": "Rs. 1100 for Two",
+      "cost": "1100 for Two",
       "rating": 4.9,
       "count": 28
     },
@@ -41,7 +41,7 @@ function sampleDataSet() {
       "name": "Loud Silence",
       "tags": ["Chinese", "Continental", "Indian", "Italian", "Snacks"],
       "img": "https://media-cdn.tripadvisor.com/media/photo-s/02/8c/0b/4e/filename-the-square-restaurant.jpg",
-      "cost": "Rs. 1100 for Two",
+      "cost": "1100 for Two",
       "rating": 4.9,
       "count": 28
     },
@@ -51,7 +51,7 @@ function sampleDataSet() {
       "name": "Rike - Terrace Bar and Grill",
       "tags": ["Chinese", "Continental", "Indian", "Italian", "Snacks"],
       "img": "https://media-cdn.tripadvisor.com/media/photo-s/02/8c/0b/4e/filename-the-square-restaurant.jpg",
-      "cost": "Rs. 1100 for Two",
+      "cost": "1100 for Two",
       "rating": 4.9,
       "count": 28
     },
@@ -61,7 +61,7 @@ function sampleDataSet() {
       "name": "Splitsvilla Bar and Lounge",
       "tags": ["Chinese", "Continental", "Indian", "Italian", "Snacks"],
       "img": "https://media-cdn.tripadvisor.com/media/photo-s/02/8c/0b/4e/filename-the-square-restaurant.jpg",
-      "cost": "Rs. 1100 for Two",
+      "cost": "1100 for Two",
       "rating": 4.9,
       "count": 28
     },
@@ -71,7 +71,7 @@ function sampleDataSet() {
       "name": "Raasta",
       "tags": ["Chinese", "Continental", "Indian", "Italian", "Snacks"],
       "img": "https://media-cdn.tripadvisor.com/media/photo-s/02/8c/0b/4e/filename-the-square-restaurant.jpg",
-      "cost": "Rs. 1100 for Two",
+      "cost": "1100 for Two",
       "rating": 4.9,
       "count": 28
     },
@@ -81,7 +81,7 @@ function sampleDataSet() {
       "name": "Oozo",
       "tags": ["Chinese", "Continental", "Indian", "Italian", "Snacks"],
       "img": "https://media-cdn.tripadvisor.com/media/photo-s/02/8c/0b/4e/filename-the-square-restaurant.jpg",
-      "cost": "Rs. 1100 for Two",
+      "cost": "1100 for Two",
       "rating": 4.9,
       "count": 28
     }

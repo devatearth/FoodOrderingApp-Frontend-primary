@@ -12,8 +12,8 @@ class FoodOrderingApplication extends Component {
   constructor() {
     super();
     this.state = {
-      data: null,
-      template: null
+      data: [],
+      template: []
     };
     this.baseUrl= "http://localhost:8080/api/";
   }
