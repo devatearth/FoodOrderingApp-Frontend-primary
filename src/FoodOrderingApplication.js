@@ -2,11 +2,12 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
+/* package imports */
+import axios from "axios";
+
 /* project imports */
-import Controller from "./screens/Controller.js"
 import Home from "./screens/home/Home.js";
 import Checkout from "./screens/checkout/Checkout.js";
-import SampleData from "./common/data/sample-data.js";
 
 class FoodOrderingApplication extends Component {
   constructor() {
@@ -21,8 +22,28 @@ class FoodOrderingApplication extends Component {
   /* fetches the restaurant data before the app is loaded and rendered */
   fetchRestaurants() {
     let $this = this;
-    $this.setState({data: SampleData(), template: SampleData()}, function() {
-      console.log($this.state);
+    let url = "http://localhost:8080/api/restaurant";
+    let requestConfig = {
+      url: url,
+      method: "get",
+      responseType: "json"
+    };
+    axios(requestConfig).then(function(response) {
+      if (response.statusText === "OK" || response.status === 200) {
+        $this.setState({data: response.data.restaurants, template: response.data.restaurants});
+      }
+    })
+    .catch(function(error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log('Error', error.message);
+      }
+      console.log(error.config);
     });
   };
 
@@ -30,7 +51,7 @@ class FoodOrderingApplication extends Component {
   searchRestaurantsByName(name) {
     let { data } = this.state;
     let newTemplateData = data.filter(function(restaurant, index) {
-      return restaurant.name.toLowerCase().indexOf(name.toLowerCase()) !== -1; 
+      return restaurant.restaurant_name.toLowerCase().indexOf(name.toLowerCase()) !== -1; 
     });
     this.setState({template: newTemplateData});
   }

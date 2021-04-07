@@ -2,7 +2,6 @@
 import React, { Component } from "react";
 
 /* mateiral ui imports */
-import StarIcon from '@material-ui/icons/Star';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
@@ -21,20 +20,19 @@ const ListOfRestaurants = (props) => {
     <div className="restaurantsContainer">
       {
         restaurants.map(function(obj, index) {
-          console.log(obj);
           return (
-            <Card className="restaurantCard" key={obj.uuid}>
-              <CardMedia image={obj.img} title={obj.name} className="cardMediaHolder"/>
+            <Card className="restaurantCard" key={obj.id}>
+              <CardMedia image={obj.photo_URL} title={obj.restaurant_name} className="cardMediaHolder"/>
               <CardContent className="cardContent">
                 {/* name */}
-                <h2>{obj.name}</h2>
+                <h2>{obj.restaurant_name}</h2>
 
                 {/* category list */}
                 <ul className="categoryList">
                   {
-                    obj.tags.map(function(tag, index) {
+                    obj.categories.split(", ").map(function(tag, index) {
                       return (
-                        <li>{tag}</li>
+                        <li key={obj.id + "-category" + index}>{tag}</li>
                       );
                     })
                   }
@@ -46,13 +44,13 @@ const ListOfRestaurants = (props) => {
                     <span className="ratingElement">
                       <FontAwesomeIcon className="starIcon" icon={faStar}/>
                       <span className="content">
-                        { obj.rating } ({obj.count})
+                        { obj.customer_rating } ({obj.number_customers_rated})
                       </span>
                     </span>
                   </div>
                   <div className="segment">
                     <FontAwesomeIcon className="starIcon" icon={faRupeeSign}/>
-                    { obj.cost }
+                    { obj.average_price } for Two
                   </div>
                 </div>
               </CardContent>
