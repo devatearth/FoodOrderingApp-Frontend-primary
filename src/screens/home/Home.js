@@ -79,8 +79,9 @@ class Home extends Component {
         />
         {/* template the data here */}
         {
-          "restaurants" in $this.props && $this.props.restaurants.length > 0 &&
+          "restaurants" in $this.props && $this.props.restaurants.length > 0 ?
           <ListOfRestaurants restaurants={$this.props.restaurants}/>
+          : <p>No restaurant with the given name</p>
         }
       </React.Fragment>
     );
