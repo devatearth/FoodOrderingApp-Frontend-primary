@@ -1,5 +1,6 @@
 /* react imports */
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 /* mateiral ui imports */
 import Card from '@material-ui/core/Card';
@@ -22,38 +23,40 @@ const ListOfRestaurants = (props) => {
         restaurants.map(function(obj, index) {
           return (
             <Card className="restaurantCard" key={obj.id}>
-              <CardMedia image={obj.photo_URL} title={obj.restaurant_name} className="cardMediaHolder"/>
-              <CardContent className="cardContent">
-                {/* name */}
-                <h2>{obj.restaurant_name}</h2>
+              <Link to={"/restaurant/" + obj.id} style={{color: "#000000", textDecoration: "none"}}>
+                <CardMedia image={obj.photo_URL} title={obj.restaurant_name} className="cardMediaHolder"/>
+                <CardContent className="cardContent">
+                  {/* name */}
+                  <h2>{obj.restaurant_name}</h2>
 
-                {/* category list */}
-                <ul className="categoryList">
-                  {
-                    obj.categories.split(", ").map(function(tag, index) {
-                      return (
-                        <li key={obj.id + "-category" + index}>{tag}</li>
-                      );
-                    })
-                  }
-                </ul>
+                  {/* category list */}
+                  <ul className="categoryList">
+                    {
+                      obj.categories.split(", ").map(function(tag, index) {
+                        return (
+                          <li key={obj.id + "-category" + index}>{tag}</li>
+                        );
+                      })
+                    }
+                  </ul>
 
-                {/* footer section */}
-                <div className="footer customRow">
-                  <div className="segment">
-                    <span className="ratingElement">
-                      <FontAwesomeIcon className="starIcon" icon={faStar}/>
-                      <span className="content">
-                        { obj.customer_rating } ({obj.number_customers_rated})
+                  {/* footer section */}
+                  <div className="footer customRow">
+                    <div className="segment">
+                      <span className="ratingElement">
+                        <FontAwesomeIcon className="starIcon" icon={faStar}/>
+                        <span className="content">
+                          { obj.customer_rating } ({obj.number_customers_rated})
+                        </span>
                       </span>
-                    </span>
+                    </div>
+                    <div className="segment">
+                      <FontAwesomeIcon className="starIcon" icon={faRupeeSign}/>
+                      { obj.average_price } for Two
+                    </div>
                   </div>
-                  <div className="segment">
-                    <FontAwesomeIcon className="starIcon" icon={faRupeeSign}/>
-                    { obj.average_price } for Two
-                  </div>
-                </div>
-              </CardContent>
+                </CardContent>
+              </Link>
             </Card>
           )
         })
