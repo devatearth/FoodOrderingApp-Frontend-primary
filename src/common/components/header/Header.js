@@ -107,13 +107,13 @@ class LoginFormComponent extends Component {
   formSubmitHandler(event) {
     event.preventDefault();
     let $this = this;
-    let { state:loginForm } = $this;
+    let loginForm = {...$this.state};
+    loginForm.apiError = "hide";
     let { userContactNumber, userPassword } = loginForm;
     let formStatus = {
       contact: false,
       password: false
     };
-    $this.formHideApiError();
 
     if (userContactNumber !== "" && AppUtilities.isValidContactNumber(userContactNumber)) {
       formStatus.contact = true;
@@ -134,7 +134,7 @@ class LoginFormComponent extends Component {
     }
 
     /* set state as needed */
-    $this.setState({ loginForm: loginForm });
+    $this.setState({...loginForm});
 
     if (formStatus.contact === true && formStatus.password === true) {
       $this.props.showSnackbar("Processsing. Please Wait...", function() {
@@ -164,6 +164,7 @@ class LoginFormComponent extends Component {
           })
           .catch(function(error) {
             console.log(error.response);
+            $this.formShowApiError(error.response.data.message);
           });
         }, 2000);
       });
@@ -401,10 +402,8 @@ class SignUpFormComponent extends Component {
         </FormControl>
         <br/>
         <br/>
-        {
-          $this.state.apiError === "show" &&
-          <p className="red formErrorResponse">{$this.state.apiMessage}</p>
-        }
+        
+        <FormHelpertext className={$this.state.apiError}><span className="red">{$this.state.apiMessage}</span></FormHelpertext>
         <Button variant="contained" color="primary" className="signUpButton" type="submit">
           Sign Up
         </Button>
@@ -417,7 +416,7 @@ class SignUpFormComponent extends Component {
 const HeaderModalSection = (props) => {
   let classes = modalStyles();
   let { tabIndexValue, tabIndexOnChange, modalIsOpen, showSnackbar, changeTabHandler, modalCloser, 
-      performLogin, performLogout } = props;
+      performLogin } = props;
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -562,15 +561,38 @@ class Header extends Component {
 
   /* set logged in = false (ie. logged out) */
   performSessionLogout(callback) {
-    /* remove the respective session storage token from the browser */
-    sessionStorage.removeItem("foodapptoken");
-    this.hideLogoutPopup();
+    let $this = this;
+    let requestConfig = {
+      url: "http://localhost:8080/api/customer/logout",
+      method: "post",
+      responseType: "json",
+      headers: {
+        "authorization": "Bearer " + window.sessionStorage.getItem("foodapptoken"),
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      data: {}
+    };
 
-    /* update the state */
-    this.setState({isLoggedIn: false, loggedInUserName: ""}, function() {
-      if (typeof callback === "function") {
-        callback();
+    /* perform the request */
+    axios(requestConfig).then(function(response) {
+      if (response.statusText === "OK" || response.status === 200) {
+        $this.snackbarShower("Logged Out Sucessfully!", function() {
+          /* remove the respective session storage token from the browser */
+          sessionStorage.removeItem("foodapptoken");
+          $this.hideLogoutPopup();
+
+          /* update the state */
+          $this.setState({isLoggedIn: false, loggedInUserName: ""}, function() {
+            if (typeof callback === "function") {
+              callback();
+            }
+          });
+        });
       }
+    })
+    .catch(function(error) {
+      console.log(error.response);
+      $this.snackbarShower("Sorry. Try Again?");
     });
   }
 
