@@ -17,6 +17,11 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelpertext from "@material-ui/core/FormHelperText";
 import Snackbar from '@material-ui/core/Snackbar';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
+/* package imports */
+import axios from "axios";
 
 /* project imports */
 import "./header.scss"; 
@@ -47,17 +52,6 @@ const HeaderSearch = (props) => {
       startAdornment={<SearchIcon className="headerSearchIcon"/>} 
       fullWidth={true}
     />
-  );
-};
-
-/* login button */
-const HeaderLoginButton = (props) => {
-  let { onClickHandler } = props;
-  return (
-    <Button variant="contained" startIcon={<AccountCircleIcon/>}
-    onClick={onClickHandler}>
-      Login
-    </Button>
   );
 };
 
@@ -143,13 +137,39 @@ class LoginFormComponent extends Component {
     $this.setState({ loginForm: loginForm });
 
     if (formStatus.contact === true && formStatus.password === true) {
-      console.log("====> ", userContactNumber, userPassword);
-      ///$this.setState({ snackbar: { message: "Logged in successfully!", show: true }});
-      $this.formResetHandler();
+      $this.props.showSnackbar("Processsing. Please Wait...", function() {
+        /* jut to show a transition from 'not logged in' to 'logged in' */
+        setTimeout(function() {
+          let signInUrl = "http://localhost:8080/api/customer/login";
+          let requestConfig = {
+            url: signInUrl,
+            headers: {
+              authorization: "Basic " + btoa(userContactNumber + ":" + userPassword),
+              'Content-Type': 'application/json;charset=UTF-8',
+            },
+            method: "post",
+            data: {}
+          };
+          axios(requestConfig).then(function(response) {
+            if (response.statusText === "OK" || response.status === 200) {
+              $this.props.performLogin(response, function() {
+                /* close the modal and perform other details */
+                $this.props.modalCloser();
+                $this.props.showSnackbar("Logged In Successfully!");
+                setTimeout(function() {
+                  $this.formResetHandler();
+                }, 1500);
+              });
+            }
+          })
+          .catch(function(error) {
+            console.log(error.response);
+          });
+        }, 2000);
+      });
     }
     else {
       console.log("error");
-      //$this.loginFormShowApiError("Hello World - API example message...");
     }
   };
 
@@ -199,22 +219,25 @@ class SignUpFormComponent extends Component {
       apiError: "hide",
       apiMessage: "Example of some error message"
     };
+
+    this.formHideApiError = this.formHideApiError.bind(this);
+    this.formShowApiError = this.formShowApiError.bind(this);
   };
   
   /* form on submit handler */
   formOnSubmitHandler(event) {
     event.preventDefault();
     let $this = this;
-    $this.formHideApiError();
     
-    let { userFirstName:firstName, userLastName:lastName, userEmail:email, userPassword:password, userContact:contact } = $this.state;
-    let { state:updatedState } = $this;
     let formStatus = {
       firstName: false,
       email: false,
       password: false,
       contact: false
     };
+    let { userFirstName:firstName, userLastName:lastName, userEmail:email, userPassword:password, userContact:contact } = $this.state;
+    let updatedState = {...$this.state};
+    updatedState.apiError = "hide";
 
     if (firstName !== "") {
       updatedState.firstNameErrorStatus = "hide";
@@ -256,10 +279,37 @@ class SignUpFormComponent extends Component {
     $this.setState({...updatedState});
 
     if (formStatus.firstName === true && formStatus.email === true && formStatus.password === true && formStatus.contact === true) {
-      //$this.formResetHandler();
-      $this.props.showSnackbar("Registered successfully! Please login now!", function() {
-        $this.props.changeTabHandler("0");
-        console.log(firstName, lastName, email, password, contact);
+      $this.props.showSnackbar("Processsing. Please Wait...", function() {
+        /* smooth transition */
+        setTimeout(function() {
+          let signUpUrl = "http://localhost:8080/api/customer/signup";
+          let requestConfig = {
+            url: signUpUrl,
+            method: "post",
+            data: {
+              "contact_number": contact,
+              "email_address": email,
+              "first_name": firstName,
+              "last_name": (lastName === "") ? null : lastName,
+              "password": password
+            }
+          };
+          axios(requestConfig).then(function(response) {
+            if (response.statusText === "OK" || response.status === 201) {
+              $this.props.changeTabHandler("0");
+              $this.props.showSnackbar("Registered successfully! Please login now!", function() {
+                setTimeout(function() {
+                  $this.formResetHandler();
+                }, 1500);
+              });
+            }
+          })
+          .catch(function(error) {
+            if ("response" in error && "data" in error.response) {
+              $this.formShowApiError(error.response.data.message);
+            }
+          });
+        }, 2500);
       });
     }
     else {
@@ -287,15 +337,17 @@ class SignUpFormComponent extends Component {
 
   /* hide api error */
   formHideApiError() {
-    this.setState({ apiError: "hide"}); 
+    let $this = this;
+    $this.setState({ apiError: "hide" }); 
   }
   
   /* show api error with message */
   formShowApiError(message) {
-    this.setState({ apiError: "show", apiMessage: message}); 
+    let $this = this;
+    $this.setState({ apiError: "show", apiMessage: message}); 
   }
   
-  /* orm elements on change handler */
+  /* form elements on change handler */
   formOnChangeHandler(event) {
     let name = event.target.name;
     let value = event.target.value;
@@ -345,10 +397,14 @@ class SignUpFormComponent extends Component {
         <FormControl required centered="true" fullWidth={true}>
           <InputLabel htmlFor="userContact">Contact No</InputLabel>
           <Input value={$this.state.userContact} name="userContact" id="userContact" type="text" onChange={$this.formOnChangeHandler.bind($this)}/>
-          <FormHelpertext className={$this.state.contactErrorStatus}><span className="red">Required</span></FormHelpertext>
+          <FormHelpertext className={$this.state.contactErrorStatus}><span className="red">Contact No. must contain only numbers and must be 10 digits long</span></FormHelpertext>
         </FormControl>
         <br/>
         <br/>
+        {
+          $this.state.apiError === "show" &&
+          <p className="red formErrorResponse">{$this.state.apiMessage}</p>
+        }
         <Button variant="contained" color="primary" className="signUpButton" type="submit">
           Sign Up
         </Button>
@@ -360,7 +416,8 @@ class SignUpFormComponent extends Component {
 /* header modal section */
 const HeaderModalSection = (props) => {
   let classes = modalStyles();
-  let { tabIndexValue, tabIndexOnChange, modalIsOpen, showSnackbar, changeTabHandler, modalCloser } = props;
+  let { tabIndexValue, tabIndexOnChange, modalIsOpen, showSnackbar, changeTabHandler, modalCloser, 
+      performLogin, performLogout } = props;
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -373,7 +430,7 @@ const HeaderModalSection = (props) => {
           <Tab label="Sign Up" value="1" className={classes.customTabs}/>
         </TabList>
         <TabPanel value="0">
-          <LoginFormComponent showSnackbar={showSnackbar}/>
+          <LoginFormComponent showSnackbar={showSnackbar} modalCloser={modalCloser} performLogin={performLogin}/>
         </TabPanel>
         <TabPanel value="1">
           <SignUpFormComponent showSnackbar={showSnackbar} changeTabHandler={changeTabHandler}/>
@@ -383,18 +440,73 @@ const HeaderModalSection = (props) => {
   );
 };
 
+/* login button */
+const HeaderLoginButton = (props) => {
+  let { onClickHandler, isLoggedIn, loggedInName:userFirstName, showLogoutPopup, logoutPopupConfig, 
+  performLogout, hideLogoutPopup } = props;
+  
+  if (!isLoggedIn) {
+    return (
+      <Button variant="contained" startIcon={<AccountCircleIcon/>} onClick={onClickHandler}>Login</Button>
+    );
+  }
+  else {
+    return (
+      <React.Fragment>
+        <Button variant="contained" className="logoutButton" startIcon={<AccountCircleIcon/>}
+        onClick={(event) => {showLogoutPopup(event.currentTarget)}}>{ userFirstName }</Button>
+        <Menu 
+          anchorEl={logoutPopupConfig.anchorElement}
+          keepMounted
+          open={logoutPopupConfig.isOpen}
+          onClose={hideLogoutPopup}
+        >
+          <MenuItem onClick={performLogout}>Logout</MenuItem>
+        </Menu>
+      </React.Fragment>
+    );
+  }
+};
+
 /* main */
 class Header extends Component {
   constructor() {
     super();
     this.state = {
-      activeTab: "1",
-      modalIsOpen: true,
+      activeTab: "0",
+      modalIsOpen: false,
+      isLoggedIn: false,
+      loggedInUserName: "",
+      logoutPopup: {
+        anchorElement: null,
+        isOpen: false
+      },
       snackbar: {
         show: false,
         message: ""
       }
     };
+  }
+
+  /* component will mount - based on the props sent from the top level food application component, necesary 
+     action will be taken */
+  componentWillMount() {
+    let $this = this;
+    if ("fetchRestaurants" in $this.props) {
+      $this.props.fetchRestaurants();
+    }
+  }
+
+  /* popup menu setting the anchor element */
+  showLogoutPopup(element) {
+    let $this = this;
+    $this.setState({logoutPopup: {anchorElement: element, isOpen: true}});
+  };
+
+  /* popup menu close for logout button */
+  hideLogoutPopup() {
+    let $this = this;
+    $this.setState({logoutPopup: {anchorElement: null, isOpen: false}});
   }
 
   /* tabs on change handler */
@@ -415,7 +527,11 @@ class Header extends Component {
 
   /* snackbar show */
   snackbarShower(messageString, callback) {
-    this.setState({ snackbar: { message: messageString, show: true }});
+    let $this = this;
+    $this.setState({ snackbar: { message: messageString, show: true }});
+    setTimeout(function() {
+      $this.snackbarCloser();
+    }, 4000);
     if (typeof callback === "function") {
       callback();
     }
@@ -431,9 +547,37 @@ class Header extends Component {
     this.setState({modalIsOpen: true});
   };
 
+  /* set logged in = true */
+  performSessionLogin(response, callback) {
+    /* set the session storage key & access token based on the response from server */
+    sessionStorage.setItem("foodapptoken", response.headers["access-token"]);
+
+    /* update the state */
+    this.setState({isLoggedIn: true, loggedInUserName: response.data.first_name}, function() {
+      if (typeof callback === "function") {
+        callback();
+      }
+    });
+  }
+
+  /* set logged in = false (ie. logged out) */
+  performSessionLogout(callback) {
+    /* remove the respective session storage token from the browser */
+    sessionStorage.removeItem("foodapptoken");
+    this.hideLogoutPopup();
+
+    /* update the state */
+    this.setState({isLoggedIn: false, loggedInUserName: ""}, function() {
+      if (typeof callback === "function") {
+        callback();
+      }
+    });
+  }
+
   /* render */
   render() {
-    let { classes } = this.props;
+    let $this = this;
+    let { routerProps } = $this.props.routerProps;
     return (
       <React.Fragment>
         {/* nav section */}
@@ -443,10 +587,22 @@ class Header extends Component {
               <HeaderAppIcon/>
             </div>
             <div className="segment">
-              <HeaderSearch searchHandler={this.props.searchHandler}/>
+              {/* search feature only applicable in the home page and other pages will not be rendered */}
+              {
+                routerProps.location.pathname === "/" &&
+                <HeaderSearch searchHandler={$this.props.searchRestaurantsByName}/>
+              }
+              {/* search feature only applicable in the home page and other pages will not be rendered */}
             </div>
             <div className="segment">
-              <HeaderLoginButton customCss={classes} onClickHandler={this.onClickHandler.bind(this)}/>
+              <HeaderLoginButton 
+                onClickHandler={this.onClickHandler.bind(this)}
+                isLoggedIn={this.state.isLoggedIn} loggedInName={this.state.loggedInUserName}
+                showLogoutPopup={this.showLogoutPopup.bind(this)}
+                hideLogoutPopup={this.hideLogoutPopup.bind(this)}
+                logoutPopupConfig={this.state.logoutPopup} 
+                performLogout={this.performSessionLogout.bind(this)}
+              />
             </div>
           </div>
         </nav>
@@ -459,11 +615,11 @@ class Header extends Component {
           tabIndexOnChange={this.tabsOnChangeHandler.bind(this)}
           showSnackbar={this.snackbarShower.bind(this)}
           changeTabHandler={this.tabsOnChangeHandler.bind(this)}
+          performLogin={this.performSessionLogin.bind(this)}
         />
 
         {/* snackbar */}
-        <Snackbar message={this.state.snackbar.message} open={this.state.snackbar.show} anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        autoHideDuration={4000} onClose={this.snackbarCloser.bind(this)}/>
+        <Snackbar message={this.state.snackbar.message} open={this.state.snackbar.show} anchorOrigin={{ vertical: "bottom", horizontal: "left" }} onClose={this.snackbarCloser.bind(this)}/>
       </React.Fragment>
     );
   }
