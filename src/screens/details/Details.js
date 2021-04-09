@@ -9,6 +9,12 @@ import './Details.css';
 import { IconButton } from "@material-ui/core";
 import Divider from '@material-ui/core/Divider';
 import AddIcon from '@material-ui/icons/Add';
+import { Card, CardContent,CardActions} from '@material-ui/core';
+import Badge from '@material-ui/core/Badge';
+import Button from "@material-ui/core/Button";
+import RemoveIcon from '@material-ui/icons/Remove';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+
 
 class Details extends Component {
   constructor(props) {
@@ -95,6 +101,83 @@ this.setState({ cartItems: myCartItem});
 
 }
 
+// Removing item from cart
+removeAnItemFromCart = (removeCartItem, index) => {
+  const myCartItem = this.state.cartItems;
+  // Match item based on index
+  let findItem = myCartItem.itemList[index];
+  // Update matched item based on index
+  findItem.quantity =  findItem.quantity - 1;
+  findItem.totalItemPrice = findItem.totalItemPrice - findItem.item.price;
+  myCartItem.totalPrice = myCartItem.totalPrice - findItem.item.price;
+  myCartItem.totalItemCount = myCartItem.totalItemCount - 1; 
+  
+  // Remove that item from cart - if the  quantity goes to or less than 0
+  if( findItem.quantity <= 0)  {
+      myCartItem.itemList.splice(index, 1);
+      this.snackBarHandler("Item removed from cart!");
+  }else{
+      myCartItem.itemList[index] = findItem;
+      this.snackBarHandler("Item quantity decreased by 1!");
+  }
+  this.setState({ cartItems: myCartItem});  
+
+}
+
+//Adding item from My Cart
+addAnItemFromCart = (addCartItem, index) => {
+  this.snackBarHandler("Item quantity increased by 1!");
+  const myCartItem = this.state.cartItems;
+  let findItem = myCartItem.itemList[index];
+   if(findItem !== undefined){
+      findItem.quantity =  findItem.quantity + 1;
+      findItem.totalItemPrice = findItem.totalItemPrice + findItem.item.price;
+      myCartItem.totalPrice = myCartItem.totalPrice + findItem.item.price;
+      myCartItem.totalItemCount = myCartItem.totalItemCount + 1;
+   }     
+   myCartItem.itemList[index] = findItem;
+  this.setState({ cartItems: myCartItem});    
+}
+
+    //Logout action from drop down menu on profile icon
+    loginredirect = () => {
+      sessionStorage.clear();
+      this.props.history.push({
+        pathname: "/"
+      });
+  }
+
+//SnackBar handler both open and close function
+snackBarHandler = (message) => {
+ this.setState({ snackBarOpen: false});
+  this.setState({ snackBarMessage: message});
+  this.setState({ snackBarOpen: true});
+}
+
+//Checkout button
+//Passess the selected items and restaurant details to Checkout page
+checkOutCart = (e) => {
+  const myCartItem = this.state.cartItems;
+  if( myCartItem.itemList.length <=0 ){
+      this.snackBarHandler("Please add an item to your cart!");
+      return;
+  }else {
+      if(sessionStorage.getItem("access-token") === null){
+          this.snackBarHandler("Please login first!");
+          return;
+      }else{
+          sessionStorage.setItem("restaurantDetails",JSON.stringify(this.state.resData));
+          //Redirecting to Checkout page
+          this.props.history.push({
+              pathname: "/checkout",
+              state: { chcartItems: this.state.cartItems,
+                totalCartItemsValue:this.state.cartItems.totalPrice }
+            })   
+      }
+  }
+}
+
+
   render() {
     return (
       <div className="mainDiv">
@@ -179,8 +262,70 @@ this.setState({ cartItems: myCartItem});
             );
           })}
 </div>
+<div className="myCart"><Card className="cardRoot">
+        <CardContent className="cardContentRoot">
+        <Badge className="hideBadgeonModal" badgeContent={this.state.cartItems.totalItemCount===0?'0':this.state.cartItems.totalItemCount} color="primary">
+<ShoppingCartIcon/></Badge><span style={{fontWeight:"bold",fontSize:"30px",marginLeft:"6%"}}>My Cart</span><br/><br/>
+<div>                                            {(this.state.cartItems.itemList || []).map((cartItem, index) => (
+                  <div className="myCartItemList" key={cartItem.item.id} >
+                   
+                          <div className="itemNameinCart" >
+                              <span >
+                              {cartItem.item.item_type==="VEG"?
+                 <span><span><i className="fa fa-stop-circle-o" style={{color:"green",width:"1",height:"1"}} aria-hidden="true"></i>
+                </span><span >{cartItem.item_name}</span></span>
+                :
+                <span><span>
+                  <i className="fa fa-stop-circle-o" style={{color:"red"}} aria-hidden="true"></i>
+                  </span><span >{cartItem.item_name}</span></span>
+               }
+                                  <span style={{color:"grey", fontSize:20, marginLeft:8}} >{cartItem.item.item_name}</span>
+                              </span>
+                          </div> 
+                              <div >
+                                <div  className="addRemove">
+                                  <IconButton aria-label="Remove Item" onClick={this.removeAnItemFromCart.bind(this, cartItem, index)}>
+                                      <RemoveIcon  style={{fontSize: 22, fontWeight:"bold", fill: 'black'}} />
+                                  </IconButton>
+                                  <Typography style={{marginTop:"8%", fontSize: 20, fill: 'grey'}}>{cartItem.quantity}</Typography> 
+                                  <IconButton aria-label="Add Item"  onClick={this.addAnItemFromCart.bind(this, cartItem, index)}>
+                                      <AddIcon style={{fontSize: 22, fontWeight:"bold", fill: 'black'}}/>
+                                  </IconButton>     
+                                  </div>                                                              
+                              </div>
+                              <div style={{paddingTop:"2%"}}>
+                                  <span style={{fontWeight:"bold", color:"grey", fontSize:"120%"}}><i className="fa fa-inr"></i>
+                                  <span>  {cartItem.totalItemPrice}</span></span>                                                               
+                              </div>                                                        
+                      
+                  </div>
+              ))}</div>
+               <Grid item xs container justify="space-between" style={{marginTop: 16}}>
+            <Grid item >
+                <Typography style={{fontSize:"170%",fontWeight:"bold"}} gutterBottom className="bold">
+                    Total Amount                                                                  
+                </Typography>
+            </Grid>
+            <Grid item >
+                <Typography style={{fontSize:"170%",fontWeight:"bold"}}  gutterBottom className="bold">
+                      <i className="fa fa-inr"></i>
+                   <span>  {this.state.cartItems.totalPrice}</span>                                                                 
+                </Typography>
+            </Grid>
+        </Grid>
+          </CardContent>
+          <CardActions><Button style={{width:"100%",fontSize:" 20px"}} variant="contained" 
+          onClick={this.checkOutCart.bind(this)} color="primary">
+            CHECKOUT</Button>
+            </CardActions>
+</Card></div>
+
+          
 
         </div>
+        
+
+
         <Snackbar
           key={"snack"}
           anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
