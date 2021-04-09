@@ -599,7 +599,7 @@ class Header extends Component {
   /* render */
   render() {
     let $this = this;
-    let { routerProps } = $this.props.routerProps;
+    //let { routerProps } = $this.props.routerProps;
     return (
       <React.Fragment>
         {/* nav section */}
@@ -611,7 +611,7 @@ class Header extends Component {
             <div className="segment">
               {/* search feature only applicable in the home page and other pages will not be rendered */}
               {
-                routerProps.location.pathname === "/" &&
+                //routerProps.location.pathname === "/" &&
                 <HeaderSearch searchHandler={$this.props.searchRestaurantsByName}/>
               }
               {/* search feature only applicable in the home page and other pages will not be rendered */}

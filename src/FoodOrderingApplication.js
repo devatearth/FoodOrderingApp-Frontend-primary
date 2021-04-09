@@ -8,6 +8,7 @@ import axios from "axios";
 /* project imports */
 import Home from "./screens/home/Home.js";
 import Checkout from "./screens/checkout/Checkout.js";
+import Details from "./screens/details/Details";
 
 class FoodOrderingApplication extends Component {
   constructor() {
@@ -60,25 +61,20 @@ class FoodOrderingApplication extends Component {
   render() {
     let $this = this;
     let arrayOfRestaurantsToRender = $this.state.template;
-    return (
-      <React.Fragment>
+    return <React.Fragment>
         <Router>
-          <div className= "main-container">
+          <div className="main-container">
             {/* home */}
-            <Route exact path="/" render={(props) => 
-              <Home {...props} baseUrl={this.baseUrl} 
-                restaurants={arrayOfRestaurantsToRender} 
-                fetchRestaurants={$this.fetchRestaurants.bind($this)}
-                searchRestaurantsByName={$this.searchRestaurantsByName.bind($this)}
-              />
-            }/>
+            <Route exact path="/" render={(props) => <Home {...props} baseUrl={this.baseUrl} restaurants={arrayOfRestaurantsToRender} fetchRestaurants={$this.fetchRestaurants.bind($this)} searchRestaurantsByName={$this.searchRestaurantsByName.bind($this)} />} />
+            
+            {/* details */}
+            <Route exact path="/restaurant/:id" render={(props) => <Details {...props} baseUrl={this.baseUrl} />} />
 
             {/* checkout */}
-            <Route exact path="/checkout" render={(props) => <Checkout {...props} baseUrl={this.baseUrl}/>} />
+            <Route exact path="/checkout" render={(props) => <Checkout {...props} baseUrl={this.baseUrl} />} />
           </div>
         </Router>
-      </React.Fragment>
-    );
+      </React.Fragment>;
   }
 }
 export default FoodOrderingApplication;
