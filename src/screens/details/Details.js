@@ -7,6 +7,8 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import Snackbar from '@material-ui/core/Snackbar';
 import './Details.css';
 import { IconButton } from "@material-ui/core";
+import Divider from '@material-ui/core/Divider';
+import AddIcon from '@material-ui/icons/Add';
 
 class Details extends Component {
   constructor(props) {
@@ -49,6 +51,49 @@ class Details extends Component {
     xhr_resDetails.setRequestHeader("Cache-Control", "no-cache");
     xhr_resDetails.send(dataRes);
   }
+
+  //Add items to cart from the Category wise list
+addToCart = (item, category) => {
+  //Calling snack bar to display message
+  this.snackBarHandler("Item added to cart!");
+const myCartItem = this.state.cartItems || { restaurant : this.state.resData, itemList: [], totalPrice: 0, totalItemCount: 0};
+let findIndex = null;
+//If the item is new, not already added into the list, then insert newly
+ let findItem = myCartItem.itemList.find((cartItem, index) => {
+     if(cartItem.item.id === item.id) {
+         findIndex = index;
+         return cartItem;
+     }
+     return undefined;
+ });
+ // If item already exists, only increment item quantiyt and price
+ if(findItem !== undefined){
+    findItem.quantity =  findItem.quantity + 1;
+    findItem.totalItemPrice = findItem.totalItemPrice + item.price;
+    myCartItem.itemList[findIndex] = findItem;
+    findIndex = null;
+    myCartItem.totalPrice = myCartItem.totalPrice + item.price;
+    myCartItem.totalItemCount = myCartItem.totalItemCount + 1;
+ } else {
+     // If not already added then creating temp object and doing other calculations
+    const cartItem = {
+        quantity : 1,
+        categoryName: category.category_name,
+        categoryId: category.id,
+        item: item,
+        totalItemPrice: item.price
+    }
+    myCartItem.totalPrice = myCartItem.totalPrice + item.price;
+    myCartItem.totalItemCount = myCartItem.totalItemCount + 1;
+    // Push items to cart
+    myCartItem.itemList.push(cartItem);
+}       
+
+// Finally updating our myCartItem state 
+this.setState({ cartItems: myCartItem});
+
+
+}
 
   render() {
     return (
@@ -103,7 +148,39 @@ class Details extends Component {
         </div>
 
 
-        <div className="orderFunction"></div>
+        <div className="orderFunction">
+        <div className="orderMenu">
+            {(this.state.resData.categories || []).map((category, index) => 
+            {
+            return (<div key={"div"+category.id}><div key={"sub-div" + category.id}
+            className="categoriesCart">{category.category_name} </div>
+            <Divider/><br/>
+            {
+              category.item_list.map(item => {
+              return(<div key={item.id}>
+               {item.item_type==='VEG'?
+                <div className="menuList"><span >
+                  <i className="fa fa-circle" style={{color:"green",width:"1",height:"1"}} aria-hidden="true"></i>
+                </span><span className="itemName">{item.item_name}</span><span className="price">
+                  <i className="fa fa-inr"></i> {item.price}</span><span className="addIcon">
+                    <IconButton onClick={this.addToCart.bind(this,item,category)}><AddIcon/></IconButton>
+                    </span></div>
+                :
+                <div className="menuList"><span>
+                  <i className="fa fa-circle" style={{color:"red"}} aria-hidden="true"></i>
+                  </span><span className="itemName">{item.item_name}</span><span className="price">
+                    <i className="fa fa-inr"></i> {item.price}</span><span className="addIcon">
+                      <IconButton onClick={this.addToCart.bind(this,item,category)}><AddIcon/>
+                      </IconButton></span></div>
+               }
+                </div>)
+              })
+            }</div>
+            );
+          })}
+</div>
+
+        </div>
         <Snackbar
           key={"snack"}
           anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
