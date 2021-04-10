@@ -388,7 +388,7 @@ class SignUpFormComponent extends Component {
         <br/>
         <FormControl required centered="true" fullWidth={true}>
           <InputLabel htmlFor="userPassword">Password</InputLabel>
-          <Input value={$this.state.userPassword} name="userPassword" id="userPassword" type="text" onChange={$this.formOnChangeHandler.bind($this)}/>
+          <Input value={$this.state.userPassword} name="userPassword" id="userPassword" type="password" onChange={$this.formOnChangeHandler.bind($this)}/>
           <FormHelpertext className={$this.state.passwordErrorStatus}><span className="red">
             Password must contain at least one capital letter, one small letter, one number, and one special character
           </span></FormHelpertext>
@@ -493,6 +493,17 @@ class Header extends Component {
     let $this = this;
     if ("fetchRestaurants" in $this.props) {
       $this.props.fetchRestaurants();
+    }
+
+    /* checks to see the session storage for the access token 'foodapptoken' */
+    $this.ifLoggedInThenMakeUpdatesToSession.bind(this)();
+  }
+
+  ifLoggedInThenMakeUpdatesToSession() {
+    let $this = this;
+    let accessToken = window.sessionStorage.getItem('foodapptoken');
+    if (accessToken) {
+      $this.setState({isLoggedIn: true, loggedInUserName: "Upgrad"});
     }
   }
 
@@ -599,7 +610,7 @@ class Header extends Component {
   /* render */
   render() {
     let $this = this;
-    //let { routerProps } = $this.props.routerProps;
+    let { routerProps } = $this.props.routerProps;
     return (
       <React.Fragment>
         {/* nav section */}
@@ -611,7 +622,7 @@ class Header extends Component {
             <div className="segment">
               {/* search feature only applicable in the home page and other pages will not be rendered */}
               {
-                //routerProps.location.pathname === "/" &&
+                routerProps.location.pathname === "/" &&
                 <HeaderSearch searchHandler={$this.props.searchRestaurantsByName}/>
               }
               {/* search feature only applicable in the home page and other pages will not be rendered */}
