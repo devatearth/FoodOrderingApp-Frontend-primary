@@ -14,6 +14,7 @@ import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
 import RemoveIcon from "@material-ui/icons/Remove";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import "../../assets/font-awesome-4.7.0/css/font-awesome.min.css";
 
 class Details extends Component {
   constructor(props) {
