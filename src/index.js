@@ -6,7 +6,6 @@ import ReactDOM from 'react-dom';
 import './index.scss';
 import FoodOrderingApplication from "./FoodOrderingApplication.js";
 
-
 ReactDOM.render(
   <React.Fragment>
     <FoodOrderingApplication/>

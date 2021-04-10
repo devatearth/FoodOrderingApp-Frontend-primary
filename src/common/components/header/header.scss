@@ -22,6 +22,10 @@ nav {
       .MuiInput-underline.Mui-focused:after {
         border-bottom-color: $white;
       }
+      .logoutButton {
+        background: transparent;
+        color: $white;
+      }
     }
     .segment:first-child {
       padding: 15px;    
@@ -34,6 +38,11 @@ nav {
 .ReactModal__Overlay.ReactModal__Overlay--after-open {
   height: 100vh;
   overflow: auto;
+}
+.MuiPopover-paper {
+  width: 100px !important;
+  max-width: 100px !important;
+  top: 155px !important;
 }
 .appHeaderModal {
   margin: 30px auto 30px;
@@ -54,6 +63,10 @@ nav {
       width: 100px;
       display: block;
       margin: 25px auto 0;
+    }
+    .formErrorResponse {
+      font-size: 0.9rem;
+      line-height: 20px;
     }
   }
 }
@@ -83,5 +96,8 @@ nav {
   }
   .appHeaderModal {
     width: 500px;
+  }
+  .MuiPopover-paper {
+    top: 55px !important;
   }
 }
