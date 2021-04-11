@@ -502,8 +502,9 @@ class Header extends Component {
   ifLoggedInThenMakeUpdatesToSession() {
     let $this = this;
     let accessToken = window.sessionStorage.getItem('foodapptoken');
+    let userName = window.sessionStorage.getItem("appusername");
     if (accessToken) {
-      $this.setState({isLoggedIn: true, loggedInUserName: "Upgrad"});
+      $this.setState({isLoggedIn: true, loggedInUserName: userName});
     }
   }
 
@@ -561,6 +562,7 @@ class Header extends Component {
   performSessionLogin(response, callback) {
     /* set the session storage key & access token based on the response from server */
     sessionStorage.setItem("foodapptoken", response.headers["access-token"]);
+    sessionStorage.setItem("appusername", response.data.first_name);
 
     /* update the state */
     this.setState({isLoggedIn: true, loggedInUserName: response.data.first_name}, function() {
@@ -590,6 +592,7 @@ class Header extends Component {
         $this.snackbarShower("Logged Out Sucessfully!", function() {
           /* remove the respective session storage token from the browser */
           sessionStorage.removeItem("foodapptoken");
+          sessionStorage.removeItem("appusername");
           $this.hideLogoutPopup();
 
           /* update the state */
