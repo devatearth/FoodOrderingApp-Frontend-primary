@@ -18,6 +18,7 @@ class FoodOrderingApplication extends Component {
       template: []
     };
     this.baseUrl= "http://localhost:8080/api/";
+    this.searchApi = null;
   }
 
   /* fetches the restaurant data before the app is loaded and rendered */
@@ -50,12 +51,50 @@ class FoodOrderingApplication extends Component {
 
   /* helps to perform the necessary search on the set of restaurant data and filter */
   searchRestaurantsByName(name) {
-    let { data } = this.state;
-    let newTemplateData = data.filter(function(restaurant, index) {
-      return restaurant.restaurant_name.toLowerCase().indexOf(name.toLowerCase()) !== -1; 
-    });
-    this.setState({template: newTemplateData});
+    let $this = this;
+    clearTimeout($this.searchApi);
+    $this.searchApi = null;
+    $this.searchApi = setTimeout(function() {
+      $this.performSearchApi(name);
+    }, 500);
   }
+
+  performSearchApi(name) {
+    let $this = this;
+    if (name === "") {
+      $this.fetchRestaurants();
+    }
+    else {
+      let requestConfig = {
+        url: "http://localhost:8080/api/restaurant/name/" + name,
+        method: "get",
+        responseType: "json"
+      };
+      axios(requestConfig).then(function(response) {
+        console.log(response);
+        if (response.statusText === "OK" || response.status === 200) {
+          let searchResults = (response.data.restaurants !== null) ? response.data.restaurants : [];
+          $this.setState({template: searchResults});
+        }
+        else {
+          $this.setState({template: []});
+        }
+      })
+      .catch(function(error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+        $this.setState({template: []});
+      });
+    }
+  };
 
   /* render */
   render() {
