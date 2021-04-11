@@ -25,7 +25,7 @@ import axios from "axios";
 
 /* project imports */
 import "./header.scss"; 
-import AppUtilities from "../../scripts/common.js";
+import AppUtilities from "../scripts/common.js";
 
 /* custom styles */
 const modalStyles = makeStyles({

@@ -12,8 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faRupeeSign } from '@fortawesome/free-solid-svg-icons'
 
 /* project imports */
-import "./home.scss";
-import Header from "../../common/components/header/Header.js";
+import "./Home.scss";
+import Header from "../../common/header/Header.js";
 
 const ListOfRestaurants = (props) => {
   let { restaurants } = props;

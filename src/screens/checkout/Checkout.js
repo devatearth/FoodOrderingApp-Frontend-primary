@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import './Checkout.css';
-import Header from '../../common/components/header/Header';
+import Header from '../../common/header/Header';
 import Grid from "@material-ui/core/Grid";
 import Snackbar from '@material-ui/core/Snackbar';
 import Stepper from "@material-ui/core/Stepper";
