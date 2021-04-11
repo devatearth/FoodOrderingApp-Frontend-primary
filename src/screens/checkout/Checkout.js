@@ -328,7 +328,7 @@ class Checkout extends Component {
       "flat_building_name": this.state.flatBldNo,
       "locality": this.state.locality,
       "pincode": this.state.pincode,
-      "state_uuid": this.state.selected
+      "state_uuid": this.state.selectedState
     })
 
     let that = this;
