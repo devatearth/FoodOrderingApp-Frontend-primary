@@ -105,15 +105,26 @@ class Checkout extends Component {
     this.setState({ onNewAddress: true });
   }
   handleNext = () => {
+    console.log("dev");
     if (this.state.onNewAddress === true) {
       //do nothing
     } else {
       if (this.state.activeStep === 1) {
+        if (this.state.paymentMethod === "") {
+          this.setState({ saveOrderResponse: "Please select payment method" })
+          this.openMessageHandler(); return;
+        }
         this.setState(state => ({
           activeStep: this.state.activeStep + 1,
           changeOption: "dispText"
         }));
       } else {
+        console.log(this.state.selected);
+        if (this.state.selected === null || this.state.selected === 0) {
+          this.setState({ saveOrderResponse: "Please select Address" })
+          this.openMessageHandler();
+          return;
+        }
         this.setState(state => ({
           activeStep: this.state.activeStep + 1,
           changeOption: "dispNone"
@@ -233,6 +244,18 @@ class Checkout extends Component {
   openMessageHandler = () => {
     this.setState({ snackBarOpen: true })
   }
+  handleReset = () => {
+    this.setState({
+    activeStep: 0
+    });
+    };
+  //Closing snack bar
+  handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ snackBarOpen: false })
+  }
   //Placing order after entering all required values:Delivery and Payment details
   //Triggered from "Place Order" button
   checkoutHandler = () => {
@@ -329,6 +352,7 @@ class Checkout extends Component {
     xhrSaveAddress.send(dataAddress);
   }
   onStateChange = (event) => {
+    console.log(event.target.value);
     this.setState({ selected: event.target.value })
   };
 
@@ -495,9 +519,15 @@ class Checkout extends Component {
     const { classes } = this.props;
     const { activeStep } = this.state;
     const steps = getSteps();
+    let $this = this;
+    let headerProps = {
+      routerProps: $this.props
+    };
     return (
       <div>
-        {/* <Header modalIsOpen={false} routerProps={this.props} /> */}
+        <Header
+          routerProps={headerProps}
+        />
         <Grid container spacing={1}>
           <Grid item xs={12} md={8}>
             <div className={classes.root}>
@@ -528,14 +558,17 @@ class Checkout extends Component {
                 })}
               </Stepper><div className={this.state.changeOption}>View the summary and place your order now!<br />
                 <div>
+                  <Button style={{ fontSize: "20px", marginLeft: "2%" }} onClick={this.handleReset} className={classes.button}>
+                    CHANGE
+                  </Button>
                 </div>
               </div>
             </div>
           </Grid>
           <Grid item xs={8} md={3}>
-            <Card >
+            <Card className="symmary-card">
               <CardHeader style={{ fontWeight: "bolder" }} title="Summary" titleTypographyProps={{ variant: 'h4' }} />
-              <div style={{ marginLeft: "3%", fontSize: "200%", color: "grey", fontWeight: "bold" }}>{this.state.resDetails.restaurant_name}</div>
+              <div style={{ marginLeft: "3%", fontSize: "1.1em", color: "grey", fontWeight: "bold" }}>{this.state.resDetails.restaurant_name}</div>
               <CardContent>
                 <Grid
                   container
@@ -547,7 +580,19 @@ class Checkout extends Component {
                     return (
                       <Grid style={{ marginLeft: "3%", color: "grey", fontSize: "18px" }} container item xs={12} spacing={1} key={index}>
                         <Grid item xs={1}>
-                          {item.item.item_type === 'VEG' ? <FiberManualRecord style={{ color: "#008000" }} /> : <FiberManualRecord style={{ color: "#b20505" }} />}
+                          {item.item.item_type === 'VEG' ? <i
+                            className="fa fa-stop-circle-o"
+                            style={{
+                              color: "green",
+                              width: "1",
+                              height: "1",
+                            }}
+                            aria-hidden="true"
+                          ></i> : <i
+                            className="fa fa-stop-circle-o"
+                            style={{ color: "red" }}
+                            aria-hidden="true"
+                          ></i>}
                         </Grid>
                         <Grid item xs={6}>
                           <span style={{ color: "grey", textTransform: "capitalize", fontSize: 20, marginLeft: 8 }}>{item.item.item_name}</span>
@@ -571,14 +616,14 @@ class Checkout extends Component {
                   </Grid>
                   <Grid container item xs={12} >
                     <Grid item xs={5}>
-                      <Typography style={{ marginLeft: "14%", fontSize: "140%", fontWeight: "bold" }} >
+                      <Typography style={{ marginLeft: "14%", fontSize: "100%", fontWeight: "bold" }} >
                         Net Amount
-                            </Typography>
+                      </Typography>
                     </Grid>
                     <Grid item xs={4}>
                     </Grid>
                     <Grid item xs={3}>
-                      <Typography style={{ marginLeft: "3%", fontSize: "140%", fontWeight: "bold" }}>
+                      <Typography style={{ marginLeft: "3%", fontSize: "100%", fontWeight: "bold" }}>
                         <i style={{ color: "grey" }} className="fa fa-inr"></i><span>  {this.props.history.location.state.totalCartItemsValue}</span>
                       </Typography>
                     </Grid>
@@ -586,7 +631,7 @@ class Checkout extends Component {
                 </Grid>
               </CardContent>
               <CardActions >
-                <Button style={{ fontSize: "120%", width: "90%", height: "40px", marginLeft: "5%" }} variant="contained" color="primary" className={this.props.classes.orderButton} onClick={this.checkoutHandler}>
+                <Button style={{ fontSize: "120%", width: "90%", height: "40px", marginLeft: "5%", padding: "25px" }} variant="contained" color="primary" className={this.props.classes.orderButton} onClick={this.checkoutHandler}>
                   Place Order
                 </Button>
               </CardActions>
