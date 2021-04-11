@@ -75,6 +75,7 @@ class Checkout extends Component {
       cityRequired: 'dispNone',
       pincode: "",
       pincodeRequired: 'dispNone',
+      pincodeLengthRequired: 'dispNone',
       stateRequired: 'dispNone',
       saveAddressSuccess: false,
       saveAddressError: 'dispNone',
@@ -85,7 +86,8 @@ class Checkout extends Component {
       totalCartItemsValue: "",
       resDetails: null,
       onNewAddress: false,
-      changeOption: "dispNone"
+      changeOption: "dispNone",
+      selectedState:0
     };
   }
 
@@ -199,9 +201,7 @@ class Checkout extends Component {
       this.getStates();
     } catch {
       this.mounted = false;
-      // this.props.history.push({
-      //   pathname: "/"
-      //  });
+      this.props.history.push("/");
     }
   }
   //Capturing input field values in state for processing
@@ -246,9 +246,9 @@ class Checkout extends Component {
   }
   handleReset = () => {
     this.setState({
-    activeStep: 0
+      activeStep: 0
     });
-    };
+  };
   //Closing snack bar
   handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -309,7 +309,6 @@ class Checkout extends Component {
   }
   //Called to save new address entered by user
   addressClickHandler = () => {
-
     this.setState({ saveAddressError: "dispNone" })
     //Validating that no fields are empty
     //If empty, "required" text is displayed
@@ -317,8 +316,10 @@ class Checkout extends Component {
     this.state.locality === "" ? this.setState({ localityRequired: "dispBlock" }) : this.setState({ localityRequired: "dispNone" });
     this.state.city === "" ? this.setState({ cityRequired: "dispBlock" }) : this.setState({ cityRequired: "dispNone" });
     this.state.pincode === "" ? this.setState({ pincodeRequired: "dispBlock" }) : this.setState({ pincodeRequired: "dispNone" });
-    this.state.selected === 0 ? this.setState({ stateRequired: "dispBlock" }) : this.setState({ stateRequired: "dispNone" });
-
+    ((this.state.pincode.length === 6 ) && this.state.pincode.match(/^\d{4}$|^\d{6}$/)) ? this.setState({ pincodeLengthRequired: "dispNone" }) : this.setState({ pincodeLengthRequired: "dispBlock" });
+   
+    (this.state.selectedState === 0 ||this.state.selectedState ==="") ? this.setState({ stateRequired: "dispBlock" }) : this.setState({ stateRequired: "dispNone" });
+    console.log(typeof this.state.pincode.length);
     if (this.state.flatBldNo === "" || this.state.locality === "" || this.state.city === "" || this.state.pincode === "" || this.state.selected === "") { return }
 
     //Forming parameters to pass in the API Url
@@ -353,7 +354,7 @@ class Checkout extends Component {
   }
   onStateChange = (event) => {
     console.log(event.target.value);
-    this.setState({ selected: event.target.value })
+    this.setState({ selectedState: event.target.value })
   };
 
   getStepContent = (step) => {
@@ -421,7 +422,7 @@ class Checkout extends Component {
                       </GridList>
                     </Grid>
                   </Grid>}
-              </TabContainer>},
+              </TabContainer>}
             {this.state.value === 1 &&
               <TabContainer>
                 <div className="login">
@@ -455,7 +456,7 @@ class Checkout extends Component {
                   <FormControl required className={this.props.formControl}>
                     <InputLabel htmlFor="State" shrink>State</InputLabel>
                     <Select
-                      value={this.state.selected}
+                      value={this.state.selectedState}
                       onChange={this.onStateChange}
                       input={<Input name="state" id="state" />}
                       style={{ width: '200px' }}
@@ -480,7 +481,8 @@ class Checkout extends Component {
                       onChange={this.pinCodeChangeHandler}
                     />
                     <FormHelperText className={this.state.pincodeRequired}><span className="red">required</span></FormHelperText>
-                  </FormControl><br /><br />
+                    <FormHelperText className={this.state.pincodeLengthRequired}><span className="red">Pincode must contain only numbers and must be 6 digits long</span></FormHelperText>
+                </FormControl><br /><br />
                   <FormControl className={this.props.formControl}>
                     <Typography variant="subtitle1" color="error" className={this.state.saveAddressError} align="left">{this.state.saveAddressErrorMsg}</Typography>
                   </FormControl><br /><br />
@@ -515,7 +517,11 @@ class Checkout extends Component {
     }
   }
   render() {
-    { console.log(this.state) }
+    { if(sessionStorage.getItem("foodapptoken") === null ||  sessionStorage.getItem("restaurantDetails") === null){
+      this.props.history.push("/");
+      return "";
+    }
+    }
     const { classes } = this.props;
     const { activeStep } = this.state;
     const steps = getSteps();
@@ -528,7 +534,7 @@ class Checkout extends Component {
         <Header
           routerProps={headerProps}
         />
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
             <div className={classes.root}>
               <Stepper activeStep={activeStep} orientation="vertical">
@@ -556,7 +562,7 @@ class Checkout extends Component {
                     </Step>
                   );
                 })}
-              </Stepper><div className={this.state.changeOption}>View the summary and place your order now!<br />
+              </Stepper><div className={this.state.changeOption} style={{ fontSize: "1.0em"}}>View the summary and place your order now!<br />
                 <div>
                   <Button style={{ fontSize: "20px", marginLeft: "2%" }} onClick={this.handleReset} className={classes.button}>
                     CHANGE
@@ -565,8 +571,8 @@ class Checkout extends Component {
               </div>
             </div>
           </Grid>
-          <Grid item xs={8} md={3}>
-            <Card className="symmary-card">
+          <Grid item xs={12} md={3} >
+            <Card className="symmary-card" style={{ width: "100%" }} >
               <CardHeader style={{ fontWeight: "bolder" }} title="Summary" titleTypographyProps={{ variant: 'h4' }} />
               <div style={{ marginLeft: "3%", fontSize: "1.1em", color: "grey", fontWeight: "bold" }}>{this.state.resDetails.restaurant_name}</div>
               <CardContent>
@@ -616,7 +622,7 @@ class Checkout extends Component {
                   </Grid>
                   <Grid container item xs={12} >
                     <Grid item xs={5}>
-                      <Typography style={{ marginLeft: "14%", fontSize: "100%", fontWeight: "bold" }} >
+                      <Typography style={{ marginLeft: "14%", fontSize: "0.8em", fontWeight: "bold" }} >
                         Net Amount
                       </Typography>
                     </Grid>
@@ -631,7 +637,7 @@ class Checkout extends Component {
                 </Grid>
               </CardContent>
               <CardActions >
-                <Button style={{ fontSize: "120%", width: "90%", height: "40px", marginLeft: "5%", padding: "25px" }} variant="contained" color="primary" className={this.props.classes.orderButton} onClick={this.checkoutHandler}>
+                <Button style={{ fontSize: "0.9em", width: "90%", height: "40px", marginLeft: "5%", padding: "25px" }} variant="contained" color="primary" className={this.props.classes.orderButton} onClick={this.checkoutHandler}>
                   Place Order
                 </Button>
               </CardActions>
