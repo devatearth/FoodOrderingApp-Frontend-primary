@@ -1,6 +1,11 @@
+/* react imports */
 import React, { Component } from "react";
-import './Checkout.css';
+
+/* project imports */
+import "./Checkout.scss";
 import Header from '../../common/header/Header';
+
+/* material ui */
 import Grid from "@material-ui/core/Grid";
 import Snackbar from '@material-ui/core/Snackbar';
 import Stepper from "@material-ui/core/Stepper";
@@ -30,6 +35,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
 import Divider from "@material-ui/core/Divider";
 import { CardActions } from "@material-ui/core";
+
 const customStyles = muiBaseTheme => ({
   root: {
     width: "100%"
@@ -358,7 +364,6 @@ class Checkout extends Component {
   };
 
   getStepContent = (step) => {
-
     switch (step) {
       case 0:
         return (
@@ -382,7 +387,7 @@ class Checkout extends Component {
                     <Grid container spacing={5}>
                       <GridList cellHeight={"auto"} className="gridListMain">
                         <GridListTile style={{ width: "100%", marginTop: "4%" }} >
-                          <span style={{ fontSize: "20px" }}>There are no saved addresses! You can save an address using the "New Address" tab or using your "Profile" Menu</span>
+                          <p className="noAddress">There are no saved addresses! You can save an address using the "New Address" tab or using your "Profile" Menu</p>
                         </GridListTile>
                       </GridList>
                     </Grid>
@@ -397,19 +402,14 @@ class Checkout extends Component {
                       <GridList cellHeight={"auto"} className="gridListMain">
                         {(this.state.dataAddress.addresses || []).map((exisAddress, index) => {
                           return (<GridListTile className={exisAddress.id === this.state.selected ? "selectedAddress" : "gridListTile"} key={exisAddress.id} id={exisAddress.id} style={{ padding: '5px' }}>
-                            <div className="App">
+                            <div className="addressCardsParent">
                               <Card className={this.props.card} key={exisAddress.id} >
                                 <CardContent className="addressCard">
-                                  <Typography
-                                    style={{ width: "100%", textTransform: "capitalize" }}
-                                    variant={"h6"}
-                                    gutterBottom
-                                  >
-                                    {exisAddress.flat_building_name} <br /> {exisAddress.locality} <br />
-                                    {exisAddress.city} <br />
-                                    {exisAddress.state.state_name} <br />
-                                    {exisAddress.pincode} <br />
-                                  </Typography>
+                                  <span className="addressContent">{exisAddress.flat_building_name}</span>
+                                  <span className="addressContent">{exisAddress.locality}</span>
+                                  <span className="addressContent">{exisAddress.city}</span>
+                                  <span className="addressContent">{exisAddress.state.state_name}</span>
+                                  <span className="addressContent">{exisAddress.pincode}</span>
                                   <IconButton className="selectAddresscircle" aria-label="Select Address" onClick={() => this.onAddressClick(exisAddress)}>
                                     {exisAddress.id === this.state.selected ? <CheckCircle style={{ color: "green" }} /> : <CheckCircle style={{ color: "#999999" }} />}
                                   </IconButton>
@@ -425,7 +425,7 @@ class Checkout extends Component {
               </TabContainer>}
             {this.state.value === 1 &&
               <TabContainer>
-                <div className="login">
+                <div className="newAddressForm">
                   <FormControl required className={this.props.formControl}>
                     <InputLabel htmlFor="FltBldNo">Flat/Build No.</InputLabel>
                     <Input
@@ -486,7 +486,7 @@ class Checkout extends Component {
                   <FormControl className={this.props.formControl}>
                     <Typography variant="subtitle1" color="error" className={this.state.saveAddressError} align="left">{this.state.saveAddressErrorMsg}</Typography>
                   </FormControl><br /><br />
-                  <Button variant="contained" style={{ width: "20%", height: "40px" }} color="secondary" onClick={this.addressClickHandler} className="saveAddressButton">
+                  <Button variant="contained" color="secondary" onClick={this.addressClickHandler} className="saveAddressButton">
                     SAVE ADDRESS
                   </Button>
                 </div>
@@ -516,6 +516,7 @@ class Checkout extends Component {
         return "Unknown step";
     }
   }
+
   render() {
     { if(sessionStorage.getItem("foodapptoken") === null ||  sessionStorage.getItem("restaurantDetails") === null){
       this.props.history.push("/");
@@ -530,30 +531,28 @@ class Checkout extends Component {
       routerProps: $this.props
     };
     return (
-      <div>
+      <React.Fragment>
         <Header
           routerProps={headerProps}
         />
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={8}>
+        <Grid container spacing={2} className="gridParent">
+          <Grid item xs={12} md={8} className="gridItem">
             <div className={classes.root}>
-              <Stepper activeStep={activeStep} orientation="vertical">
+              <Stepper activeStep={activeStep} orientation="vertical" className="gridStepper">
                 {steps.map(label => {
                   return (
                     <Step key={label} className={classes.step}>
                       <StepLabel classes={{ iconContainer: classes.iconContainer }}>
-                        <Typography component={'div'} variant={"h5"}>
-                          {label}
-                        </Typography>
+                        <h1>{label}</h1>
                       </StepLabel>
                       <StepContent>
                         <Typography component={'div'}>{this.getStepContent(activeStep)}</Typography>
                         <div>
                           <div>
-                            <Button style={{ fontSize: "20px" }} disabled={activeStep === 0} onClick={this.handleBack} className={classes.button}>
+                            <Button className="backButton" disabled={activeStep === 0} onClick={this.handleBack} className={classes.button}>
                               Back
-                                                        </Button>
-                            <Button variant="contained" color="primary" onClick={this.handleNext} className={classes.button}>
+                            </Button>
+                            <Button className="primaryButton" variant="contained" color="primary" onClick={this.handleNext} className={classes.button}>
                               {activeStep === steps.length - 1 ? "Finish" : "Next"}
                             </Button>
                           </div>
@@ -562,7 +561,8 @@ class Checkout extends Component {
                     </Step>
                   );
                 })}
-              </Stepper><div className={this.state.changeOption} style={{ fontSize: "1.0em"}}>View the summary and place your order now!<br />
+              </Stepper>
+              <div className={this.state.changeOption} style={{ fontSize: "1.0em"}}>View the summary and place your order now!<br />
                 <div>
                   <Button style={{ fontSize: "20px", marginLeft: "2%" }} onClick={this.handleReset} className={classes.button}>
                     CHANGE
@@ -571,11 +571,11 @@ class Checkout extends Component {
               </div>
             </div>
           </Grid>
-          <Grid item xs={12} md={3} >
-            <Card className="symmary-card" style={{ width: "100%" }} >
-              <CardHeader style={{ fontWeight: "bolder" }} title="Summary" titleTypographyProps={{ variant: 'h4' }} />
-              <div style={{ marginLeft: "3%", fontSize: "1.1em", color: "grey", fontWeight: "bold" }}>{this.state.resDetails.restaurant_name}</div>
-              <CardContent>
+          <Grid item xs={12} md={4} className="gridItem">
+            <Card className="summaryCard">
+              <CardHeader className="summaryHeader" style={{ fontWeight: "bolder" }} title="Summary" titleTypographyProps={{ variant: 'h4' }} />
+              <span className="restaurantName">{this.state.resDetails.restaurant_name}</span>
+              <CardContent className="orderDetatilsRoot">
                 <Grid
                   container
                   direction="row"
@@ -584,7 +584,7 @@ class Checkout extends Component {
                 >
                   {this.props.history.location.state.chcartItems.itemList.map((item, index) => {
                     return (
-                      <Grid style={{ marginLeft: "3%", color: "grey", fontSize: "18px" }} container item xs={12} spacing={1} key={index}>
+                      <Grid className="orderGrid" container item xs={12} spacing={1} key={index}>
                         <Grid item xs={1}>
                           {item.item.item_type === 'VEG' ? <i
                             className="fa fa-stop-circle-o"
@@ -600,8 +600,8 @@ class Checkout extends Component {
                             aria-hidden="true"
                           ></i>}
                         </Grid>
-                        <Grid item xs={6}>
-                          <span style={{ color: "grey", textTransform: "capitalize", fontSize: 20, marginLeft: 8 }}>{item.item.item_name}</span>
+                        <Grid item xs={6} className="itemName">
+                          <span>{item.item.item_name}</span>
                         </Grid>
                         <Grid item xs={1}>
                           {item.quantity}
@@ -609,7 +609,7 @@ class Checkout extends Component {
                         <Grid item xs={1}>
                         </Grid>
                         <Grid item xs={2}>
-                          <i className="fa fa-inr"></i><span>  {item.item.price}</span>
+                          <i className="fa fa-inr"></i><span>{item.item.price}</span>
                         </Grid>
                       </Grid>);
                   })
@@ -637,7 +637,7 @@ class Checkout extends Component {
                 </Grid>
               </CardContent>
               <CardActions >
-                <Button style={{ fontSize: "0.9em", width: "90%", height: "40px", marginLeft: "5%", padding: "25px" }} variant="contained" color="primary" className={this.props.classes.orderButton} onClick={this.checkoutHandler}>
+                <Button className="placeOrderButton" variant="contained" color="primary" className={this.props.classes.orderButton} onClick={this.checkoutHandler}>
                   Place Order
                 </Button>
               </CardActions>
@@ -668,7 +668,7 @@ class Checkout extends Component {
             </IconButton>,
           ]}
         />
-      </div>
+      </React.Fragment>
     );
   }
 }
