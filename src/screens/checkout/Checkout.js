@@ -194,7 +194,7 @@ class Checkout extends Component {
     xhrAddresses.send();
   }
   //Set component state values from props passed from Details page
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     try {
       var access_token = sessionStorage.getItem("foodapptoken");
       console.log(this.props.history.location.state.chcartItems.ItemList);

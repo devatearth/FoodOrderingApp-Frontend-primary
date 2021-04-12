@@ -420,6 +420,7 @@ const HeaderModalSection = (props) => {
   return (
     <Modal
       isOpen={modalIsOpen}
+      ariaHideApp={false}
       onRequestClose={modalCloser}
       className="appHeaderModal"
     >
@@ -489,7 +490,7 @@ class Header extends Component {
 
   /* component will mount - based on the props sent from the top level food application component, necesary 
      action will be taken */
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let $this = this;
     if ("fetchRestaurants" in $this.props) {
       $this.props.fetchRestaurants();
