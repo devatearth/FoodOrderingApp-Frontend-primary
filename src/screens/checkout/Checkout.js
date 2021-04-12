@@ -32,7 +32,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import MenuItem from '@material-ui/core/MenuItem';
-import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
 import Divider from "@material-ui/core/Divider";
 import { CardActions } from "@material-ui/core";
 
@@ -93,7 +92,7 @@ class Checkout extends Component {
       resDetails: null,
       onNewAddress: false,
       changeOption: "dispNone",
-      selectedState:0
+      selectedState: 0
     };
   }
 
@@ -297,6 +296,11 @@ class Checkout extends Component {
     let that = this;
     let access_token = sessionStorage.getItem("foodapptoken");
     let xhrCheckout = new XMLHttpRequest();
+    xhrCheckout.addEventListener('error', function () {
+      let response = 'Unable to place your order! Please try again!';
+      that.setState({ saveOrderResponse: response });
+      that.openMessageHandler();
+    })
     xhrCheckout.addEventListener("readystatechange", function () {
       if (this.readyState === 4) {
         let checkoutResponse = JSON.parse(this.response);
@@ -322,9 +326,9 @@ class Checkout extends Component {
     this.state.locality === "" ? this.setState({ localityRequired: "dispBlock" }) : this.setState({ localityRequired: "dispNone" });
     this.state.city === "" ? this.setState({ cityRequired: "dispBlock" }) : this.setState({ cityRequired: "dispNone" });
     this.state.pincode === "" ? this.setState({ pincodeRequired: "dispBlock" }) : this.setState({ pincodeRequired: "dispNone" });
-    ((this.state.pincode.length === 6 ) && this.state.pincode.match(/^\d{4}$|^\d{6}$/)) ? this.setState({ pincodeLengthRequired: "dispNone" }) : this.setState({ pincodeLengthRequired: "dispBlock" });
-   
-    (this.state.selectedState === 0 ||this.state.selectedState ==="") ? this.setState({ stateRequired: "dispBlock" }) : this.setState({ stateRequired: "dispNone" });
+    (((this.state.pincode.length === 6) && this.state.pincode.match(/^\d{4}$|^\d{6}$/) )|| this.state.pincode === "") ? this.setState({ pincodeLengthRequired: "dispNone" }) : this.setState({ pincodeLengthRequired: "dispBlock" });
+
+    (this.state.selectedState === 0 || this.state.selectedState === "") ? this.setState({ stateRequired: "dispBlock" }) : this.setState({ stateRequired: "dispNone" });
     console.log(typeof this.state.pincode.length);
     if (this.state.flatBldNo === "" || this.state.locality === "" || this.state.city === "" || this.state.pincode === "" || this.state.selected === "") { return }
 
@@ -482,7 +486,7 @@ class Checkout extends Component {
                     />
                     <FormHelperText className={this.state.pincodeRequired}><span className="red">required</span></FormHelperText>
                     <FormHelperText className={this.state.pincodeLengthRequired}><span className="red">Pincode must contain only numbers and must be 6 digits long</span></FormHelperText>
-                </FormControl><br /><br />
+                  </FormControl><br /><br />
                   <FormControl className={this.props.formControl}>
                     <Typography variant="subtitle1" color="error" className={this.state.saveAddressError} align="left">{this.state.saveAddressErrorMsg}</Typography>
                   </FormControl><br /><br />
@@ -518,10 +522,11 @@ class Checkout extends Component {
   }
 
   render() {
-    { if(sessionStorage.getItem("foodapptoken") === null ||  sessionStorage.getItem("restaurantDetails") === null){
-      this.props.history.push("/");
-      return "";
-    }
+    {
+      if (sessionStorage.getItem("foodapptoken") === null || sessionStorage.getItem("restaurantDetails") === null) {
+        this.props.history.push("/");
+        return "";
+      }
     }
     const { classes } = this.props;
     const { activeStep } = this.state;
@@ -549,10 +554,10 @@ class Checkout extends Component {
                         <Typography component={'div'}>{this.getStepContent(activeStep)}</Typography>
                         <div>
                           <div>
-                            <Button className="backButton" disabled={activeStep === 0} onClick={this.handleBack} className={classes.button}>
+                            <Button className="backButton" disabled={activeStep === 0} onClick={this.handleBack} >
                               Back
                             </Button>
-                            <Button className="primaryButton" variant="contained" color="primary" onClick={this.handleNext} className={classes.button}>
+                            <Button className="primaryButton" variant="contained" color="primary" onClick={this.handleNext} >
                               {activeStep === steps.length - 1 ? "Finish" : "Next"}
                             </Button>
                           </div>
@@ -562,7 +567,7 @@ class Checkout extends Component {
                   );
                 })}
               </Stepper>
-              <div className={this.state.changeOption} style={{ fontSize: "1.0em"}}>View the summary and place your order now!<br />
+              <div className={this.state.changeOption} style={{ fontSize: "1.0em" }}>View the summary and place your order now!<br />
                 <div>
                   <Button style={{ fontSize: "20px", marginLeft: "2%" }} onClick={this.handleReset} className={classes.button}>
                     CHANGE
@@ -637,7 +642,7 @@ class Checkout extends Component {
                 </Grid>
               </CardContent>
               <CardActions >
-                <Button className="placeOrderButton" variant="contained" color="primary" className={this.props.classes.orderButton} onClick={this.checkoutHandler}>
+                <Button className="placeOrderButton" variant="contained" color="primary"  onClick={this.checkoutHandler}>
                   Place Order
                 </Button>
               </CardActions>
