@@ -24,7 +24,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import axios from "axios";
 
 /* project imports */
-import "./header.scss"; 
+import "./header.scss";
 import AppUtilities from "../scripts/common.js";
 
 /* custom styles */
@@ -37,7 +37,7 @@ const modalStyles = makeStyles({
 /* app icon */
 const HeaderAppIcon = () => {
   return (
-    <FastfoodIcon className="appIcon"/>
+    <FastfoodIcon className="appIcon" />
   );
 };
 
@@ -45,11 +45,11 @@ const HeaderAppIcon = () => {
 const HeaderSearch = (props) => {
   let { searchHandler } = props;
   return (
-    <Input 
-      onChange={(event) => { searchHandler(event.target.value);}}
-      placeholder="Search by Restaurant Name" 
+    <Input
+      onChange={(event) => { searchHandler(event.target.value); }}
+      placeholder="Search by Restaurant Name"
       className="appSearch"
-      startAdornment={<SearchIcon className="headerSearchIcon"/>} 
+      startAdornment={<SearchIcon className="headerSearchIcon" />}
       fullWidth={true}
     />
   );
@@ -83,12 +83,12 @@ class LoginFormComponent extends Component {
 
   /* hide api error */
   formHideApiError() {
-    this.setState({ apiError: "hide"}); 
+    this.setState({ apiError: "hide" });
   }
-  
+
   /* show api error with message */
   formShowApiError(message) {
-    this.setState({ apiError: "show", apiMessage: message}); 
+    this.setState({ apiError: "show", apiMessage: message });
   }
 
   /* login form elements on change handler */
@@ -97,17 +97,17 @@ class LoginFormComponent extends Component {
     let value = event.target.value;
     let $this = this;
     let { state } = $this;
-    
+
     /* update */
     state[name] = value;
-    this.setState({...state});
+    this.setState({ ...state });
   };
-  
+
   /* login form submit handler */
   formSubmitHandler(event) {
     event.preventDefault();
     let $this = this;
-    let loginForm = {...$this.state};
+    let loginForm = { ...$this.state };
     loginForm.apiError = "hide";
     let { userContactNumber, userPassword } = loginForm;
     let formStatus = {
@@ -134,12 +134,12 @@ class LoginFormComponent extends Component {
     }
 
     /* set state as needed */
-    $this.setState({...loginForm});
+    $this.setState({ ...loginForm });
 
     if (formStatus.contact === true && formStatus.password === true) {
-      $this.props.showSnackbar("Processsing. Please Wait...", function() {
+      $this.props.showSnackbar("Processsing. Please Wait...", function () {
         /* jut to show a transition from 'not logged in' to 'logged in' */
-        setTimeout(function() {
+        setTimeout(function () {
           let signInUrl = "http://localhost:8080/api/customer/login";
           let requestConfig = {
             url: signInUrl,
@@ -150,22 +150,22 @@ class LoginFormComponent extends Component {
             method: "post",
             data: {}
           };
-          axios(requestConfig).then(function(response) {
+          axios(requestConfig).then(function (response) {
             if (response.statusText === "OK" || response.status === 200) {
-              $this.props.performLogin(response, function() {
+              $this.props.performLogin(response, function () {
                 /* close the modal and perform other details */
                 $this.props.modalCloser();
                 $this.props.showSnackbar("Logged In Successfully!");
-                setTimeout(function() {
+                setTimeout(function () {
                   $this.formResetHandler();
                 }, 1500);
               });
             }
           })
-          .catch(function(error) {
-            console.log(error.response);
-            $this.formShowApiError(error.response.data.message);
-          });
+            .catch(function (error) {
+              console.log(error.response);
+              $this.formShowApiError(error.response.data.message);
+            });
         }, 2000);
       });
     }
@@ -181,18 +181,18 @@ class LoginFormComponent extends Component {
       <form className="loginForm" onSubmit={$this.formSubmitHandler.bind($this)} noValidate autoComplete="off">
         <FormControl required centered="true" fullWidth={true}>
           <InputLabel htmlFor="userContactNumber">Contact Number</InputLabel>
-          <Input value={$this.state.userContactNumber} name="userContactNumber" id="userContactNumber" type="text" onChange={$this.formOnChangeHandler.bind($this)}/>
+          <Input value={$this.state.userContactNumber} name="userContactNumber" id="userContactNumber" type="text" onChange={$this.formOnChangeHandler.bind($this)} />
           <FormHelpertext className={$this.state.contactErrorStatus}><span className="red">Invalid Contact</span></FormHelpertext>
         </FormControl>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <FormControl required centered="true" fullWidth={true}>
           <InputLabel htmlFor="userPassword">Password</InputLabel>
-          <Input value={$this.state.userPassword} name="userPassword" id="userPassword" type="password" onChange={$this.formOnChangeHandler.bind($this)}/>
+          <Input value={$this.state.userPassword} name="userPassword" id="userPassword" type="password" onChange={$this.formOnChangeHandler.bind($this)} />
           <FormHelpertext className={$this.state.passwordErrorStatus}><span className="red">Required</span></FormHelpertext>
         </FormControl>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <FormHelpertext className={$this.state.apiError}><span className="red">{$this.state.apiMessage}</span></FormHelpertext>
         <Button variant="contained" color="primary" className="loginButton" type="submit">
           Login
@@ -224,20 +224,20 @@ class SignUpFormComponent extends Component {
     this.formHideApiError = this.formHideApiError.bind(this);
     this.formShowApiError = this.formShowApiError.bind(this);
   };
-  
+
   /* form on submit handler */
   formOnSubmitHandler(event) {
     event.preventDefault();
     let $this = this;
-    
+
     let formStatus = {
       firstName: false,
       email: false,
       password: false,
       contact: false
     };
-    let { userFirstName:firstName, userLastName:lastName, userEmail:email, userPassword:password, userContact:contact } = $this.state;
-    let updatedState = {...$this.state};
+    let { userFirstName: firstName, userLastName: lastName, userEmail: email, userPassword: password, userContact: contact } = $this.state;
+    let updatedState = { ...$this.state };
     updatedState.apiError = "hide";
 
     if (firstName !== "") {
@@ -277,12 +277,12 @@ class SignUpFormComponent extends Component {
     }
 
     /* perform neccessary updates */
-    $this.setState({...updatedState});
+    $this.setState({ ...updatedState });
 
     if (formStatus.firstName === true && formStatus.email === true && formStatus.password === true && formStatus.contact === true) {
-      $this.props.showSnackbar("Processsing. Please Wait...", function() {
+      $this.props.showSnackbar("Processsing. Please Wait...", function () {
         /* smooth transition */
-        setTimeout(function() {
+        setTimeout(function () {
           let signUpUrl = "http://localhost:8080/api/customer/signup";
           let requestConfig = {
             url: signUpUrl,
@@ -295,21 +295,21 @@ class SignUpFormComponent extends Component {
               "password": password
             }
           };
-          axios(requestConfig).then(function(response) {
+          axios(requestConfig).then(function (response) {
             if (response.statusText === "OK" || response.status === 201) {
               $this.props.changeTabHandler("0");
-              $this.props.showSnackbar("Registered successfully! Please login now!", function() {
-                setTimeout(function() {
+              $this.props.showSnackbar("Registered successfully! Please login now!", function () {
+                setTimeout(function () {
                   $this.formResetHandler();
                 }, 1500);
               });
             }
           })
-          .catch(function(error) {
-            if ("response" in error && "data" in error.response) {
-              $this.formShowApiError(error.response.data.message);
-            }
-          });
+            .catch(function (error) {
+              if ("response" in error && "data" in error.response) {
+                $this.formShowApiError(error.response.data.message);
+              }
+            });
         }, 2500);
       });
     }
@@ -339,25 +339,25 @@ class SignUpFormComponent extends Component {
   /* hide api error */
   formHideApiError() {
     let $this = this;
-    $this.setState({ apiError: "hide" }); 
+    $this.setState({ apiError: "hide" });
   }
-  
+
   /* show api error with message */
   formShowApiError(message) {
     let $this = this;
-    $this.setState({ apiError: "show", apiMessage: message}); 
+    $this.setState({ apiError: "show", apiMessage: message });
   }
-  
+
   /* form elements on change handler */
   formOnChangeHandler(event) {
     let name = event.target.name;
     let value = event.target.value;
     let $this = this;
     let { state } = $this;
-    
+
     /* update */
     state[name] = value;
-    this.setState({...state});
+    this.setState({ ...state });
   };
 
   /* render */
@@ -368,41 +368,41 @@ class SignUpFormComponent extends Component {
       <form className="signUpForm" noValidate autoComplete="off" onSubmit={$this.formOnSubmitHandler.bind($this)}>
         <FormControl required centered="true" fullWidth={true}>
           <InputLabel htmlFor="userFirstName">First Name</InputLabel>
-          <Input value={$this.state.userFirstName} name="userFirstName" id="userFirstName" type="text" onChange={$this.formOnChangeHandler.bind($this)}/>
+          <Input value={$this.state.userFirstName} name="userFirstName" id="userFirstName" type="text" onChange={$this.formOnChangeHandler.bind($this)} />
           <FormHelpertext className={$this.state.firstNameErrorStatus}><span className="red">Required</span></FormHelpertext>
         </FormControl>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <FormControl centered="true" fullWidth={true}>
           <InputLabel htmlFor="userLastName">Last Name</InputLabel>
-          <Input value={$this.state.userLastName} name="userLastName" id="userLastName" type="text" onChange={$this.formOnChangeHandler.bind($this)}/>
+          <Input value={$this.state.userLastName} name="userLastName" id="userLastName" type="text" onChange={$this.formOnChangeHandler.bind($this)} />
         </FormControl>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <FormControl required centered="true" fullWidth={true}>
           <InputLabel htmlFor="userEmail">Email Address</InputLabel>
-          <Input value={$this.state.userEmail} name="userEmail" id="userEmail" type="text" onChange={$this.formOnChangeHandler.bind($this)}/>
+          <Input value={$this.state.userEmail} name="userEmail" id="userEmail" type="text" onChange={$this.formOnChangeHandler.bind($this)} />
           <FormHelpertext className={$this.state.emailErrorStatus}><span className="red">Invalid Email</span></FormHelpertext>
         </FormControl>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <FormControl required centered="true" fullWidth={true}>
           <InputLabel htmlFor="userPassword">Password</InputLabel>
-          <Input value={$this.state.userPassword} name="userPassword" id="userPassword" type="password" onChange={$this.formOnChangeHandler.bind($this)}/>
+          <Input value={$this.state.userPassword} name="userPassword" id="userPassword" type="password" onChange={$this.formOnChangeHandler.bind($this)} />
           <FormHelpertext className={$this.state.passwordErrorStatus}><span className="red">
             Password must contain at least one capital letter, one small letter, one number, and one special character
           </span></FormHelpertext>
         </FormControl>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <FormControl required centered="true" fullWidth={true}>
           <InputLabel htmlFor="userContact">Contact No</InputLabel>
-          <Input value={$this.state.userContact} name="userContact" id="userContact" type="text" onChange={$this.formOnChangeHandler.bind($this)}/>
+          <Input value={$this.state.userContact} name="userContact" id="userContact" type="text" onChange={$this.formOnChangeHandler.bind($this)} />
           <FormHelpertext className={$this.state.contactErrorStatus}><span className="red">Contact No. must contain only numbers and must be 10 digits long</span></FormHelpertext>
         </FormControl>
-        <br/>
-        <br/>
-        
+        <br />
+        <br />
+
         <FormHelpertext className={$this.state.apiError}><span className="red">{$this.state.apiMessage}</span></FormHelpertext>
         <Button variant="contained" color="primary" className="signUpButton" type="submit">
           Sign Up
@@ -415,8 +415,8 @@ class SignUpFormComponent extends Component {
 /* header modal section */
 const HeaderModalSection = (props) => {
   let classes = modalStyles();
-  let { tabIndexValue, tabIndexOnChange, modalIsOpen, showSnackbar, changeTabHandler, modalCloser, 
-      performLogin } = props;
+  let { tabIndexValue, tabIndexOnChange, modalIsOpen, showSnackbar, changeTabHandler, modalCloser,
+    performLogin } = props;
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -424,15 +424,15 @@ const HeaderModalSection = (props) => {
       className="appHeaderModal"
     >
       <TabContext value={tabIndexValue}>
-        <TabList onChange={(event, newValue) => {tabIndexOnChange(newValue)}}>
-          <Tab label="Login" value="0" className={classes.customTabs}/>
-          <Tab label="Sign Up" value="1" className={classes.customTabs}/>
+        <TabList onChange={(event, newValue) => { tabIndexOnChange(newValue) }}>
+          <Tab label="Login" value="0" className={classes.customTabs} />
+          <Tab label="Sign Up" value="1" className={classes.customTabs} />
         </TabList>
         <TabPanel value="0">
-          <LoginFormComponent showSnackbar={showSnackbar} modalCloser={modalCloser} performLogin={performLogin}/>
+          <LoginFormComponent showSnackbar={showSnackbar} modalCloser={modalCloser} performLogin={performLogin} />
         </TabPanel>
         <TabPanel value="1">
-          <SignUpFormComponent showSnackbar={showSnackbar} changeTabHandler={changeTabHandler}/>
+          <SignUpFormComponent showSnackbar={showSnackbar} changeTabHandler={changeTabHandler} />
         </TabPanel>
       </TabContext>
     </Modal>
@@ -441,20 +441,20 @@ const HeaderModalSection = (props) => {
 
 /* login button */
 const HeaderLoginButton = (props) => {
-  let { onClickHandler, isLoggedIn, loggedInName:userFirstName, showLogoutPopup, logoutPopupConfig, 
-  performLogout, hideLogoutPopup } = props;
-  
+  let { onClickHandler, isLoggedIn, loggedInName: userFirstName, showLogoutPopup, logoutPopupConfig,
+    performLogout, hideLogoutPopup } = props;
+
   if (!isLoggedIn) {
     return (
-      <Button variant="contained" startIcon={<AccountCircleIcon/>} onClick={onClickHandler}>Login</Button>
+      <Button variant="contained" startIcon={<AccountCircleIcon />} onClick={onClickHandler}>Login</Button>
     );
   }
   else {
     return (
       <React.Fragment>
-        <Button variant="contained" className="logoutButton" startIcon={<AccountCircleIcon/>}
-        onClick={(event) => {showLogoutPopup(event.currentTarget)}}>{ userFirstName }</Button>
-        <Menu 
+        <Button variant="contained" className="logoutButton" startIcon={<AccountCircleIcon />}
+          onClick={(event) => { showLogoutPopup(event.currentTarget) }}>{userFirstName}</Button>
+        <Menu
           anchorEl={logoutPopupConfig.anchorElement}
           keepMounted
           open={logoutPopupConfig.isOpen}
@@ -504,25 +504,25 @@ class Header extends Component {
     let accessToken = window.sessionStorage.getItem('foodapptoken');
     let userName = window.sessionStorage.getItem("appusername");
     if (accessToken) {
-      $this.setState({isLoggedIn: true, loggedInUserName: userName});
+      $this.setState({ isLoggedIn: true, loggedInUserName: userName });
     }
   }
 
   /* popup menu setting the anchor element */
   showLogoutPopup(element) {
     let $this = this;
-    $this.setState({logoutPopup: {anchorElement: element, isOpen: true}});
+    $this.setState({ logoutPopup: { anchorElement: element, isOpen: true } });
   };
 
   /* popup menu close for logout button */
   hideLogoutPopup() {
     let $this = this;
-    $this.setState({logoutPopup: {anchorElement: null, isOpen: false}});
+    $this.setState({ logoutPopup: { anchorElement: null, isOpen: false } });
   }
 
   /* tabs on change handler */
   tabsOnChangeHandler(tabIndexToShow) {
-    this.setState({activeTab: tabIndexToShow});
+    this.setState({ activeTab: tabIndexToShow });
   }
 
   /* on click handler */
@@ -533,14 +533,14 @@ class Header extends Component {
 
   /* snackbar closer */
   snackbarCloser() {
-    this.setState({ snackbar: { ...this.state.snackbar, show: false }});
+    this.setState({ snackbar: { ...this.state.snackbar, show: false } });
   }
 
   /* snackbar show */
   snackbarShower(messageString, callback) {
     let $this = this;
-    $this.setState({ snackbar: { message: messageString, show: true }});
-    setTimeout(function() {
+    $this.setState({ snackbar: { message: messageString, show: true } });
+    setTimeout(function () {
       $this.snackbarCloser();
     }, 4000);
     if (typeof callback === "function") {
@@ -550,12 +550,12 @@ class Header extends Component {
 
   /* open modal */
   modalCloser() {
-    this.setState({modalIsOpen: false});
+    this.setState({ modalIsOpen: false });
   };
 
   /* close modal */
   modalOpener() {
-    this.setState({modalIsOpen: true});
+    this.setState({ modalIsOpen: true });
   };
 
   /* set logged in = true */
@@ -565,7 +565,7 @@ class Header extends Component {
     sessionStorage.setItem("appusername", response.data.first_name);
 
     /* update the state */
-    this.setState({isLoggedIn: true, loggedInUserName: response.data.first_name}, function() {
+    this.setState({ isLoggedIn: true, loggedInUserName: response.data.first_name }, function () {
       if (typeof callback === "function") {
         callback();
       }
@@ -587,16 +587,16 @@ class Header extends Component {
     };
 
     /* perform the request */
-    axios(requestConfig).then(function(response) {
+    axios(requestConfig).then(function (response) {
       if (response.statusText === "OK" || response.status === 200) {
-        $this.snackbarShower("Logged Out Sucessfully!", function() {
+        $this.snackbarShower("Logged Out Sucessfully!", function () {
           /* remove the respective session storage token from the browser */
           sessionStorage.removeItem("foodapptoken");
           sessionStorage.removeItem("appusername");
           $this.hideLogoutPopup();
 
           /* update the state */
-          $this.setState({isLoggedIn: false, loggedInUserName: ""}, function() {
+          $this.setState({ isLoggedIn: false, loggedInUserName: "" }, function () {
             if (typeof callback === "function") {
               callback();
             }
@@ -604,10 +604,10 @@ class Header extends Component {
         });
       }
     })
-    .catch(function(error) {
-      console.log(error.response);
-      $this.snackbarShower("Sorry. Try Again?");
-    });
+      .catch(function (error) {
+        console.log(error.response);
+        $this.snackbarShower("Sorry. Try Again?");
+      });
   }
 
   /* render */
@@ -620,34 +620,34 @@ class Header extends Component {
         <nav>
           <div className="customRow">
             <div className="segment">
-              <HeaderAppIcon/>
+              <HeaderAppIcon />
             </div>
             <div className="segment">
               {/* search feature only applicable in the home page and other pages will not be rendered */}
               {
                 routerProps.location.pathname === "/" &&
-                <HeaderSearch searchHandler={$this.props.searchRestaurantsByName}/>
+                <HeaderSearch searchHandler={$this.props.searchRestaurantsByName} />
               }
               {/* search feature only applicable in the home page and other pages will not be rendered */}
             </div>
             <div className="segment">
-              <HeaderLoginButton 
+              <HeaderLoginButton
                 onClickHandler={this.onClickHandler.bind(this)}
                 isLoggedIn={this.state.isLoggedIn} loggedInName={this.state.loggedInUserName}
                 showLogoutPopup={this.showLogoutPopup.bind(this)}
                 hideLogoutPopup={this.hideLogoutPopup.bind(this)}
-                logoutPopupConfig={this.state.logoutPopup} 
+                logoutPopupConfig={this.state.logoutPopup}
                 performLogout={this.performSessionLogout.bind(this)}
               />
             </div>
           </div>
         </nav>
-        
+
         {/* modal section */}
-        <HeaderModalSection 
+        <HeaderModalSection
           modalIsOpen={this.state.modalIsOpen}
           modalCloser={this.modalCloser.bind(this)}
-          tabIndexValue={this.state.activeTab} 
+          tabIndexValue={this.state.activeTab}
           tabIndexOnChange={this.tabsOnChangeHandler.bind(this)}
           showSnackbar={this.snackbarShower.bind(this)}
           changeTabHandler={this.tabsOnChangeHandler.bind(this)}
@@ -655,7 +655,7 @@ class Header extends Component {
         />
 
         {/* snackbar */}
-        <Snackbar message={this.state.snackbar.message} open={this.state.snackbar.show} anchorOrigin={{ vertical: "bottom", horizontal: "left" }} onClose={this.snackbarCloser.bind(this)}/>
+        <Snackbar message={this.state.snackbar.message} open={this.state.snackbar.show} anchorOrigin={{ vertical: "bottom", horizontal: "left" }} onClose={this.snackbarCloser.bind(this)} />
       </React.Fragment>
     );
   }

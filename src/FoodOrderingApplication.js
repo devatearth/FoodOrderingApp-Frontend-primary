@@ -17,7 +17,7 @@ class FoodOrderingApplication extends Component {
       data: [],
       template: []
     };
-    this.baseUrl= "http://localhost:8080/api/";
+    this.baseUrl = "http://localhost:8080/api/";
     this.searchApi = null;
   }
 
@@ -30,23 +30,23 @@ class FoodOrderingApplication extends Component {
       method: "get",
       responseType: "json"
     };
-    axios(requestConfig).then(function(response) {
+    axios(requestConfig).then(function (response) {
       if (response.statusText === "OK" || response.status === 200) {
-        $this.setState({data: response.data.restaurants, template: response.data.restaurants});
+        $this.setState({ data: response.data.restaurants, template: response.data.restaurants });
       }
     })
-    .catch(function(error) {
-      if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        console.log(error.request);
-      } else {
-        console.log('Error', error.message);
-      }
-      console.log(error.config);
-    });
+      .catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      });
   };
 
   /* helps to perform the necessary search on the set of restaurant data and filter */
@@ -54,7 +54,7 @@ class FoodOrderingApplication extends Component {
     let $this = this;
     clearTimeout($this.searchApi);
     $this.searchApi = null;
-    $this.searchApi = setTimeout(function() {
+    $this.searchApi = setTimeout(function () {
       $this.performSearchApi(name);
     }, 500);
   }
@@ -70,29 +70,29 @@ class FoodOrderingApplication extends Component {
         method: "get",
         responseType: "json"
       };
-      axios(requestConfig).then(function(response) {
+      axios(requestConfig).then(function (response) {
         console.log(response);
         if (response.statusText === "OK" || response.status === 200) {
           let searchResults = (response.data.restaurants !== null) ? response.data.restaurants : [];
-          $this.setState({template: searchResults});
+          $this.setState({ template: searchResults });
         }
         else {
-          $this.setState({template: []});
+          $this.setState({ template: [] });
         }
       })
-      .catch(function(error) {
-        if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log('Error', error.message);
-        }
-        console.log(error.config);
-        $this.setState({template: []});
-      });
+        .catch(function (error) {
+          if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            console.log(error.request);
+          } else {
+            console.log('Error', error.message);
+          }
+          console.log(error.config);
+          $this.setState({ template: [] });
+        });
     }
   };
 
@@ -101,19 +101,19 @@ class FoodOrderingApplication extends Component {
     let $this = this;
     let arrayOfRestaurantsToRender = $this.state.template;
     return <React.Fragment>
-        <Router>
-          <div className="main-container">
-            {/* home */}
-            <Route exact path="/" render={(props) => <Home {...props} baseUrl={this.baseUrl} restaurants={arrayOfRestaurantsToRender} fetchRestaurants={$this.fetchRestaurants.bind($this)} searchRestaurantsByName={$this.searchRestaurantsByName.bind($this)} />} />
-            
-            {/* details */}
-            <Route exact path="/restaurant/:id" render={(props) => <Details {...props} baseUrl={this.baseUrl} />} />
+      <Router>
+        <div className="main-container">
+          {/* home */}
+          <Route exact path="/" render={(props) => <Home {...props} baseUrl={this.baseUrl} restaurants={arrayOfRestaurantsToRender} fetchRestaurants={$this.fetchRestaurants.bind($this)} searchRestaurantsByName={$this.searchRestaurantsByName.bind($this)} />} />
 
-            {/* checkout */}
-            <Route exact path="/checkout" render={(props) => <Checkout {...props} baseUrl={this.baseUrl} />} />
-          </div>
-        </Router>
-      </React.Fragment>;
+          {/* details */}
+          <Route exact path="/restaurant/:id" render={(props) => <Details {...props} baseUrl={this.baseUrl} />} />
+
+          {/* checkout */}
+          <Route exact path="/checkout" render={(props) => <Checkout {...props} baseUrl={this.baseUrl} />} />
+        </div>
+      </Router>
+    </React.Fragment>;
   }
 }
 export default FoodOrderingApplication;

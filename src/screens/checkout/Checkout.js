@@ -326,7 +326,7 @@ class Checkout extends Component {
     this.state.locality === "" ? this.setState({ localityRequired: "dispBlock" }) : this.setState({ localityRequired: "dispNone" });
     this.state.city === "" ? this.setState({ cityRequired: "dispBlock" }) : this.setState({ cityRequired: "dispNone" });
     this.state.pincode === "" ? this.setState({ pincodeRequired: "dispBlock" }) : this.setState({ pincodeRequired: "dispNone" });
-    (((this.state.pincode.length === 6) && this.state.pincode.match(/^\d{4}$|^\d{6}$/) )|| this.state.pincode === "") ? this.setState({ pincodeLengthRequired: "dispNone" }) : this.setState({ pincodeLengthRequired: "dispBlock" });
+    (((this.state.pincode.length === 6) && this.state.pincode.match(/^\d{4}$|^\d{6}$/)) || this.state.pincode === "") ? this.setState({ pincodeLengthRequired: "dispNone" }) : this.setState({ pincodeLengthRequired: "dispBlock" });
 
     (this.state.selectedState === 0 || this.state.selectedState === "") ? this.setState({ stateRequired: "dispBlock" }) : this.setState({ stateRequired: "dispNone" });
     console.log(typeof this.state.pincode.length);
@@ -642,7 +642,7 @@ class Checkout extends Component {
                 </Grid>
               </CardContent>
               <CardActions >
-                <Button className="placeOrderButton" variant="contained" color="primary"  onClick={this.checkoutHandler}>
+                <Button className="placeOrderButton" variant="contained" color="primary" onClick={this.checkoutHandler}>
                   Place Order
                 </Button>
               </CardActions>

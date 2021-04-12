@@ -8,7 +8,7 @@ import FoodOrderingApplication from "./FoodOrderingApplication.js";
 
 ReactDOM.render(
   <React.Fragment>
-    <FoodOrderingApplication/>
+    <FoodOrderingApplication />
   </React.Fragment>,
   document.getElementById('root')
 );

@@ -20,11 +20,11 @@ const ListOfRestaurants = (props) => {
   return (
     <div className="restaurantsContainer">
       {
-        restaurants.map(function(obj, index) {
+        restaurants.map(function (obj, index) {
           return (
             <Card className="restaurantCard" key={obj.id}>
-              <Link to={"/restaurant/" + obj.id} style={{color: "#000000", textDecoration: "none"}}>
-                <CardMedia image={obj.photo_URL} title={obj.restaurant_name} className="cardMediaHolder"/>
+              <Link to={"/restaurant/" + obj.id} style={{ color: "#000000", textDecoration: "none" }}>
+                <CardMedia image={obj.photo_URL} title={obj.restaurant_name} className="cardMediaHolder" />
                 <CardContent className="cardContent">
                   {/* name */}
                   <h2>{obj.restaurant_name}</h2>
@@ -32,7 +32,7 @@ const ListOfRestaurants = (props) => {
                   {/* category list */}
                   <ul className="categoryList">
                     {
-                      obj.categories.split(", ").map(function(tag, index) {
+                      obj.categories.split(", ").map(function (tag, index) {
                         return (
                           <li key={obj.id + "-category" + index}>{tag}</li>
                         );
@@ -44,15 +44,15 @@ const ListOfRestaurants = (props) => {
                   <div className="footer customRow">
                     <div className="segment">
                       <span className="ratingElement">
-                        <FontAwesomeIcon className="starIcon" icon={faStar}/>
+                        <FontAwesomeIcon className="starIcon" icon={faStar} />
                         <span className="content">
-                          { obj.customer_rating } ({obj.number_customers_rated})
+                          {obj.customer_rating} ({obj.number_customers_rated})
                         </span>
                       </span>
                     </div>
                     <div className="segment">
-                      <FontAwesomeIcon className="starIcon" icon={faRupeeSign}/>
-                      { obj.average_price } for Two
+                      <FontAwesomeIcon className="starIcon" icon={faRupeeSign} />
+                      {obj.average_price} for Two
                     </div>
                   </div>
                 </CardContent>
@@ -75,7 +75,7 @@ class Home extends Component {
     return (
       <React.Fragment>
         {/* header */}
-        <Header 
+        <Header
           routerProps={headerProps}
           fetchRestaurants={$this.props.fetchRestaurants}
           searchRestaurantsByName={$this.props.searchRestaurantsByName}
@@ -83,8 +83,8 @@ class Home extends Component {
         {/* template the data here */}
         {
           "restaurants" in $this.props && $this.props.restaurants.length > 0 ?
-          <ListOfRestaurants restaurants={$this.props.restaurants}/>
-          : <p>No restaurant with the given name</p>
+            <ListOfRestaurants restaurants={$this.props.restaurants} />
+            : <p>No restaurant with the given name</p>
         }
       </React.Fragment>
     );
